@@ -27,15 +27,40 @@ const createMovie = async (req, res) => {
   }
 };
 
-const deleteMovie = async(req,res) => {
-    try {
-        
-    } catch (error) {
-        
+const deleteMovie = async (req, res) => {
+  try {
+    const { movieId } = req.params;
+
+    const deletedMovie = await Movie.findByIdAndDelete(movieId);
+
+    if (!deletedMovie) {
+      return res.status(404).json({
+        success: false,
+        error: {},
+        data: {},
+        message: "Movie not found",
+      });
     }
-}
+
+    return res.status(200).json({
+      success: true,
+      error: {},
+      data: deletedMovie,
+      message: "Movie deleted successfully",
+    });
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      success: false,
+      error: { message: error.message },
+      data: {},
+      message: "Something went wrong while deleting the movie",
+    });
+  }
+};
 
 module.exports = {
   createMovie,
-  deleteMovie
+  deleteMovie,
 };
