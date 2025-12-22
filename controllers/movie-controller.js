@@ -27,6 +27,15 @@ const createMovie = async (req, res) => {
   }
 };
 
+const deleteMovie = async(req,res) => {
+    try {
+        
+    } catch (error) {
+        
+    }
+}
+
 module.exports = {
   createMovie,
+  deleteMovie
 };
