@@ -1,4 +1,19 @@
 const Movie = require("../models/movie");
+const MovieService = require("../services/movie-service");
+
+const ErrorResponseBody = {
+  err: {},
+  data: {},
+  message: "Something went wrong, cannot process the request",
+  success: false,
+};
+
+const SuccessResponseBody = {
+  err: {},
+  data: {},
+  message: "Successfully Processed Request",
+  success: true,
+};
 
 /**
  * Controller function to create a new movie
@@ -60,7 +75,23 @@ const deleteMovie = async (req, res) => {
   }
 };
 
+const getMovie = async (req, res) => {
+  try {
+    const response = await MovieService.getMovieById(req.params.id);
+    if (response.error) {
+      ErrorResponseBody.err = response.error;
+      return res.status(response.code).json(ErrorResponseBody);
+    }
+    SuccessResponseBody.data = response;
+    return res.status(200).json(SuccessResponseBody);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(ErrorResponseBody);
+  }
+};
+
 module.exports = {
   createMovie,
   deleteMovie,
+  getMovie,
 };
