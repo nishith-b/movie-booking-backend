@@ -10,10 +10,18 @@ const {
  */
 const createMovie = async (req, res) => {
   try {
-    const movie = await MovieService.createMovie(req.body);
+    const response = await MovieService.createMovie(req.body);
+    // Error Caused by Frontend Request
+    if (response.err) {
+      ErrorResponseBody.err = response.err;
+      ErrorResponseBody.message =
+        "Validation Failed on Few Parameters of The Request Body";
+      return res.status(response.code).json(ErrorResponseBody);
+    }
     SuccessResponseBody.data = movie;
     return res.status(201).json(SuccessResponseBody);
   } catch (error) {
+    // Handles Backend Errors
     console.log(error);
     ErrorResponseBody.err = error;
     return res.status(500).json(ErrorResponseBody);
