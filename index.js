@@ -3,6 +3,7 @@ const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 
 const MovieRoutes = require("./routes/movie-routes");
+const TheatreRoutes = require("./routes/theatre-routes");
 
 dotenv.config();
 
@@ -12,7 +13,8 @@ const PORT = process.env.PORT || 5000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-MovieRoutes(app)
+MovieRoutes(app);
+TheatreRoutes(app);
 
 app.get("/home", (req, res) => {
   return res.json({
