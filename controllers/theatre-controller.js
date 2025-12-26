@@ -42,8 +42,12 @@ const getTheatre = async (req, res) => {
 const getTheatres = async (req, res) => {
   try {
     const response = await TheatreService.getAllTheatres(req.query);
-    SuccessResponseBody.data = response;
+    if (response.error) {
+      ErrorResponseBody.err = response.error;
+      return res.status(response.code).json(ErrorResponseBody);
+    }
     SuccessResponseBody.message = "Successfully fetched all the theatres";
+    SuccessResponseBody.data = response;
     return res.status(200).json(SuccessResponseBody);
   } catch (error) {
     ErrorResponseBody.err = error;

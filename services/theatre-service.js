@@ -71,6 +71,13 @@ const getAllTheatres = async (data) => {
       query.name = data.name;
     }
     const response = await Theatre.find(query);
+    console.log(response);
+    if (!response || response.length === 0) {
+      return {
+        error: "No record of a theatre found for the given filter",
+        code: 404,
+      };
+    }
     return response;
   } catch (error) {
     console.log(error);
