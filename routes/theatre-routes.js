@@ -11,6 +11,8 @@ const routes = (app) => {
   app.get("/mba/api/v1/theatres", theatreController.getTheatres);
 
   app.get("/mba/api/v1/theatres/:id", theatreController.getTheatre);
+
+  app.delete("/mba/api/v1/theatres/:id", theatreController.deleteTheatre);
 };
 
 module.exports = routes;

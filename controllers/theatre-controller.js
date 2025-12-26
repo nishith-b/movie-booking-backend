@@ -51,4 +51,20 @@ const getTheatres = async (req, res) => {
   }
 };
 
-module.exports = { create, getTheatre, getTheatres };
+const deleteTheatre = async (req, res) => {
+  try {
+    const response = await TheatreService.deleteTheatre(req.params.id);
+    if (response.error) {
+      ErrorResponseBody.err = response.error;
+      return res.status(response.code).json(ErrorResponseBody);
+    }
+    SuccessResponseBody.data = response;
+    SuccessResponseBody.message = "Successfully deleted the given theatre";
+    return res.status(200).json(SuccessResponseBody);
+  } catch (error) {
+    ErrorResponseBody.err = error;
+    return res.status(500).json(ErrorResponseBody);
+  }
+};
+
+module.exports = { create, getTheatre, getTheatres, deleteTheatre };

@@ -17,7 +17,21 @@ const createTheatre = async (data) => {
   }
 };
 
-const deleteTheatre = async () => {};
+const deleteTheatre = async (id) => {
+  try {
+    const response = await Theatre.findByIdAndDelete(id);
+    if (!response) {
+      return {
+        error: "No record of a theatre found for the given id",
+        code: 404,
+      };
+    }
+    return response;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
 
 /**
  *
