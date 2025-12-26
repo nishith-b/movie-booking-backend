@@ -28,20 +28,21 @@ const validateCreateMovieRequest = async (req, res, next) => {
       "The Trailer URL of the movie not present in the request";
     return res.status(400).json(ErrorResponseBody);
   }
+
+  if (!req.body.releaseDate) {
+    ErrorResponseBody.err =
+      "The Releaese Date of the movie not present in the request";
+    return res.status(400).json(ErrorResponseBody);
+  }
+
+  if (!req.body.director) {
+    ErrorResponseBody.err =
+      "The Director of the movie not present in the request";
+    return res.status(400).json(ErrorResponseBody);
+  }
+
+  next();
 };
-
-if (!req.body.releaseDate) {
-  ErrorResponseBody.err =
-    "The Releaese Date of the movie not present in the request";
-  return res.status(400).json(ErrorResponseBody);
-}
-
-if (!req.body.director) {
-  ErrorResponseBody.err =
-    "The Director of the movie not present in the request";
-  return res.status(400).json(ErrorResponseBody);
-}
-
 module.exports = {
   validateCreateMovieRequest,
 };
