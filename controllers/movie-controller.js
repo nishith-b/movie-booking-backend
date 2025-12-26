@@ -65,8 +65,27 @@ const getMovie = async (req, res) => {
   }
 };
 
+const updateMovie = async (req, res) => {
+  try {
+    const response = await MovieService.updateMovie(req.params.id, req.body);
+    if (response.err) {
+      ErrorResponseBody.err = response.err;
+      ErrorResponseBody.message =
+        "The updates that we are trying to apply doesn't validate the schema";
+      return res.status(response.code).json(ErrorResponseBody);
+    }
+    SuccessResponseBody.data = response;
+    return res.status(200).json(SuccessResponseBody);
+  } catch (error) {
+    console.log(error);
+    ErrorResponseBody.err = error;
+    return res.status(500).json(ErrorResponseBody);
+  }
+};
+
 module.exports = {
   createMovie,
   deleteMovie,
   getMovie,
+  updateMovie,
 };
