@@ -1,118 +1,47 @@
-/**
- * Movie Request Validation Middleware
- */
+const { ErrorResponseBody } = require("../utils/response-body");
 
-const validateCreateMovieRequest = (req, res, next) => {
-  const {
-    name,
-    description,
-    casts,
-    trailerURL,
-    releaseDate,
-    language,
-    director,
-    releaseStatus,
-  } = req.body;
-
-  // 1️⃣ Required fields
-  if (!name || !description || !trailerURL || !releaseDate) {
-    return res.status(400).json({
-      success: false,
-      message:
-        "name, description, trailerURL, and releaseDate are required fields",
-    });
+const validateCreateMovieRequest = async (req, res, next) => {
+  // validate the movie name
+  if (!req.body.name) {
+    ErrorResponseBody.err =
+      "The name of the movie is not present in the request sent";
+    return res.status(400).json(ErrorResponseBody);
   }
 
-  // 2️⃣ Type validations
-  if (casts && !Array.isArray(casts)) {
-    return res.status(400).json({
-      success: false,
-      message: "casts must be an array of strings",
-    });
+  if (!req.body.description) {
+    ErrorResponseBody.err =
+      "The description of the movie not present in the request";
+    return res.status(400).json(ErrorResponseBody);
   }
 
-  // 3️⃣ Date validation
-  if (isNaN(Date.parse(releaseDate))) {
-    return res.status(400).json({
-      success: false,
-      message: "releaseDate must be a valid date",
-    });
+  if (
+    !req.body.casts ||
+    req.body.casts.length == 0 ||
+    !Array.isArray(req.body.casts)
+  ) {
+    ErrorResponseBody.err = "The cast of the movie not present in the request";
+    return res.status(400).json(ErrorResponseBody);
   }
 
-  // 4️⃣ URL validation
-  try {
-    new URL(trailerURL);
-  } catch (error) {
-    return res.status(400).json({
-      success: false,
-      message: "trailerURL must be a valid URL",
-    });
+  if (!req.body.trailerURL) {
+    ErrorResponseBody.err =
+      "The Trailer URL of the movie not present in the request";
+    return res.status(400).json(ErrorResponseBody);
   }
-
-  // 5️⃣ Enum validation (optional but recommended)
-  const validReleaseStatus = ["UPCOMING", "RELEASED", "BLOCKED"];
-  if (releaseStatus && !validReleaseStatus.includes(releaseStatus)) {
-    return res.status(400).json({
-      success: false,
-      message: `releaseStatus must be one of ${validReleaseStatus.join(", ")}`,
-    });
-  }
-
-  next();
 };
 
-/**
- * Validate Movie ID in params
- */
-const validateMovieIdParam = (req, res, next) => {
-  const { id } = req.params;
+if (!req.body.releaseDate) {
+  ErrorResponseBody.err =
+    "The Releaese Date of the movie not present in the request";
+  return res.status(400).json(ErrorResponseBody);
+}
 
-  if (!id || id.length !== 24) {
-    return res.status(400).json({
-      success: false,
-      message: "Invalid movie ID",
-    });
-  }
-
-  next();
-};
-
-/**
- * Validate Update Movie Request
- */
-const validateUpdateMovieRequest = (req, res, next) => {
-  const { trailerURL, releaseDate, casts } = req.body;
-
-  if (trailerURL) {
-    try {
-      new URL(trailerURL);
-    } catch (error) {
-      return res.status(400).json({
-        success: false,
-        message: "trailerURL must be a valid URL",
-      });
-    }
-  }
-
-  if (releaseDate && isNaN(Date.parse(releaseDate))) {
-    return res.status(400).json({
-      success: false,
-      message: "releaseDate must be a valid date",
-    });
-  }
-
-  if (casts && !Array.isArray(casts)) {
-    return res.status(400).json({
-      success: false,
-      message: "casts must be an array",
-    });
-  }
-
-  next();
-};
+if (!req.body.director) {
+  ErrorResponseBody.err =
+    "The Director of the movie not present in the request";
+  return res.status(400).json(ErrorResponseBody);
+}
 
 module.exports = {
   validateCreateMovieRequest,
-  validateUpdateMovieRequest,
-  validateMovieIdParam,
 };
