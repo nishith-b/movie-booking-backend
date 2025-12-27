@@ -1,8 +1,8 @@
 const Theatre = require("../models/theatre");
 
 /**
- * 
- * @param data --> object containing details of the theatre to be created 
+ *
+ * @param data --> object containing details of the theatre to be created
  * @returns --> object with the new theatre details
  */
 const createTheatre = async (data) => {
@@ -22,9 +22,8 @@ const createTheatre = async (data) => {
   }
 };
 
-
 /**
- * 
+ *
  * @param id --> unique id using which we can identify the theatre has to be deleted
  * @returns --> returns deleted theatre object
  */
@@ -45,8 +44,8 @@ const deleteTheatre = async (id) => {
 };
 
 /**
- * 
- * @param id --> unique id which identifies theatres 
+ *
+ * @param id --> unique id which identifies theatres
  * @returns --> returns data of the particular theatre
  */
 const getTheatre = async (id) => {
@@ -67,7 +66,7 @@ const getTheatre = async (id) => {
 };
 
 /**
- * 
+ *
  * @param data --> the data to be used to filter out theates based on city/pincode
  * @returns --> returns an object with the filtered content of theatres
  */
@@ -111,7 +110,7 @@ const getAllTheatres = async (data) => {
 };
 
 /**
- * 
+ *
  * @param id --> unique id to identify the theatre to be updated
  * @param data --> data to be used to update the thaetre
  * @returns --> returns new updated theatre object
@@ -144,10 +143,48 @@ const updateTheatre = async (id, data) => {
   }
 };
 
+/**
+ *
+ * @param theatreId --> unique id of the theatres for which we want to update movies
+ * @param movieIds --> array of movie ids that are expected to be updated in theatre
+ * @param insert --> boolean that tells whether we want insert movies or remove them
+ * @returns --> returns updated object
+ */
+const updateMoviesInTheatres = async (theatreId, movieIds, insert) => {
+  const theatre = await Theatre.findById(theatreId);
+  if (!theatre) {
+    return {
+      err: "No such theatre found for the id provided",
+      code: 404,
+    };
+  }
+  if (insert) {
+    // add movies
+    movieIds.forEach((movieId) => {
+      theatre.movies.push(movieId);
+    });
+  } else {
+    // remove movies
+    let savedMovieIds = theatre.movies;
+
+    movieIds.forEach((movieId) => {
+      savedMovieIds = savedMovieIds.filter(
+        (smi) => smi.toString() !== movieId.toString()
+      );
+    });
+
+    theatre.movies = savedMovieIds;
+  }
+
+  await theatre.save();
+  return theatre.populate("movies");
+};
+
 module.exports = {
   createTheatre,
   deleteTheatre,
   getTheatre,
   getAllTheatres,
   updateTheatre,
+  updateMoviesInTheatres,
 };

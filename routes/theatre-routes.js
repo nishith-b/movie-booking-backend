@@ -36,6 +36,12 @@ const routes = (app) => {
   // UPDATE a theatre by ID (Full update using PUT)
   // Endpoint: PUT /mba/api/v1/theatres/:id
   app.put("/mba/api/v1/theatres/:id", theatreController.updateTheatre);
+
+  app.patch(
+    "/mba/api/v1/theatres/:id/movies",
+    theatreMiddleware.validateUpdateMoviesRequest,
+    theatreController.updateMovies
+  );
 };
 
 module.exports = routes;
