@@ -151,33 +151,39 @@ const updateTheatre = async (id, data) => {
  * @returns --> returns updated object
  */
 const updateMoviesInTheatres = async (theatreId, movieIds, insert) => {
-  const theatre = await Theatre.findById(theatreId);
-  if (!theatre) {
-    return {
-      err: "No such theatre found for the id provided",
-      code: 404,
-    };
-  }
-  if (insert) {
-    // add movies
-    movieIds.forEach((movieId) => {
-      theatre.movies.push(movieId);
-    });
-  } else {
-    // remove movies
-    let savedMovieIds = theatre.movies;
+  try {
+    const theatre = await Theatre.findById(theatreId);
+    if (!theatre) {
+      return {
+        err: "No such theatre found for the id provided",
+        code: 404,
+      };
+    }
 
-    movieIds.forEach((movieId) => {
-      savedMovieIds = savedMovieIds.filter(
-        (smi) => smi.toString() !== movieId.toString()
+    if (insert) {
+      // add movies (avoid duplicates)
+      const existingMovieIds = new Set(
+        theatre.movies.map((id) => id.toString())
       );
-    });
 
-    theatre.movies = savedMovieIds;
+      movieIds.forEach((movieId) => {
+        if (!existingMovieIds.has(movieId.toString())) {
+          theatre.movies.push(movieId);
+        }
+      });
+    } else {
+      // remove movies
+      theatre.movies = theatre.movies.filter(
+        (movieId) => !movieIds.includes(movieId.toString())
+      );
+    }
+
+    await theatre.save();
+    return theatre.populate("movies");
+  } catch (error) {
+    console.log(error);
+    throw error;
   }
-
-  await theatre.save();
-  return theatre.populate("movies");
 };
 
 module.exports = {
