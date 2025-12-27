@@ -71,4 +71,29 @@ const deleteTheatre = async (req, res) => {
   }
 };
 
-module.exports = { create, getTheatre, getTheatres, deleteTheatre };
+const updateTheatre = async (req, res) => {
+  try {
+    const response = await TheatreService.updateTheatre(
+      req.params.id,
+      req.body
+    );
+    if (response.error) {
+      ErrorResponseBody.err = response.error;
+      return res.status(response.code).json(ErrorResponseBody);
+    }
+    SuccessResponseBody.data = response;
+    SuccessResponseBody.message = "Succecssfully updated the theatre";
+    return res.status(200).json(SuccessResponseBody);
+  } catch (error) {
+    console.log(error);
+    ErrorResponseBody.err = error;
+    return res.status(500).json(ErrorResponseBody);
+  }
+};
+module.exports = {
+  create,
+  getTheatre,
+  getTheatres,
+  deleteTheatre,
+  updateTheatre,
+};

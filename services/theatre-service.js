@@ -80,7 +80,6 @@ const getAllTheatres = async (data) => {
       pagination.skip = data.skip * perPage;
     }
     const response = await Theatre.find(query, {}, pagination);
-    console.log(response);
     if (!response || response.length === 0) {
       return {
         error: "No record of a theatre found for the given filter",
@@ -94,9 +93,38 @@ const getAllTheatres = async (data) => {
   }
 };
 
+const updateTheatre = async (id, data) => {
+  try {
+    const response = await Theatre.findByIdAndUpdate(id, data, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!response) {
+      // no record found for the given id
+      return {
+        error: "No Theatre found for the given id",
+        code: 404,
+      };
+    }
+    return response;
+  } catch (error) {
+    console.log(error);
+    if (error.name == "ValidationError") {
+      let err = {};
+      Object.keys(error.errors).forEach((key) => {
+        err[key] = error.errors[key].message;
+      });
+      return { error: err, code: 422 };
+    }
+    throw error;
+  }
+};
+
 module.exports = {
   createTheatre,
   deleteTheatre,
   getTheatre,
   getAllTheatres,
+  updateTheatre,
 };
