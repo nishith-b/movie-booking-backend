@@ -32,16 +32,20 @@ const createMovie = async (data) => {
 };
 
 const deleteMovie = async (id) => {
-  const movie = await Movie.deleteOne(id);
-
-  if (!movie) {
-    return {
-      error: "No movie found for the corresponding id provided",
-      code: 404,
-    };
+  try {
+    const movie = await Movie.deleteOne(id);
+    if(!movie){
+      return {
+        error: "No movie record found for the id provided",
+        code: 404
+      }
+    }
+    return movie;
+  } catch (error) {
+    console.log(error)
+    throw error
   }
-
-  return movie;
+  
 };
 
 const updateMovie = async (id, data) => {
