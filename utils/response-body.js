@@ -1,3 +1,7 @@
+/**
+ * This object will be used as a template for building error responses
+ */
+
 const ErrorResponseBody = {
   err: {},
   data: {},
@@ -5,6 +9,9 @@ const ErrorResponseBody = {
   success: false,
 };
 
+/**
+ * This object will be used as a template for building success response
+ */
 const SuccessResponseBody = {
   err: {},
   data: {},

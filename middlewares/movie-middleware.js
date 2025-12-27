@@ -1,7 +1,14 @@
 const { ErrorResponseBody } = require("../utils/response-body");
 
+/**
+ *
+ * @param req --> HTTP request object
+ * @param res --> HTTP response object
+ * @param next --> next middleware function
+ * @returns --> whether the request is valid or not
+ */
+
 const validateCreateMovieRequest = async (req, res, next) => {
-  // validate the movie name
   if (!req.body.name) {
     ErrorResponseBody.err =
       "The name of the movie is not present in the request sent";

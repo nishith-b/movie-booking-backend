@@ -9,7 +9,7 @@ const theatreSchema = new mongoose.Schema(
     name: {
       type: String,
       required: true,
-      minLegth: 3
+      minLegth: 3,
     },
     description: String,
     city: {
@@ -22,7 +22,7 @@ const theatreSchema = new mongoose.Schema(
     },
     address: String,
   },
-  { timestamps: true }
+  { timestamps: true } // Automatically add createdAt and updatedAt fields
 );
 
 const Theatre = mongoose.model("Theatre", theatreSchema);

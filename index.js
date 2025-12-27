@@ -16,13 +16,6 @@ app.use(express.urlencoded({ extended: true }));
 MovieRoutes(app);
 TheatreRoutes(app);
 
-app.get("/home", (req, res) => {
-  return res.json({
-    success: true,
-    message: "Fetched Home",
-  });
-});
-
 const startServer = async () => {
   try {
     await mongoose.connect(process.env.DB_URL);

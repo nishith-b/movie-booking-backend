@@ -1,16 +1,19 @@
 const TheatreService = require("../services/theatre-service");
-const {
-  SuccessResponseBody,
-  ErrorResponseBody,
-} = require("../utils/response-body");
+const { SuccessResponseBody, ErrorResponseBody } = require("../utils/response-body");
 
+/**
+ * Create a new theatre
+ * @param req --> HTTP request object containing theatre details in body
+ * @param res --> HTTP response object to be returned
+ * @returns --> Returns the created theatre or validation/error response
+ */
 const create = async (req, res) => {
   try {
     const response = await TheatreService.createTheatre(req.body);
     if (response.err) {
       ErrorResponseBody.err = response.error;
       ErrorResponseBody.message =
-        "Validation Failed on few parametrs of the request body";
+        "Validation Failed on few parameters of the request body";
       return res.status(response.code).json(ErrorResponseBody);
     }
     SuccessResponseBody.data = response;
@@ -22,6 +25,12 @@ const create = async (req, res) => {
   }
 };
 
+/**
+ * Get a theatre by ID
+ * @param req --> HTTP request object containing theatre ID as param
+ * @param res --> HTTP response object to be returned
+ * @returns --> Returns the theatre details or error response
+ */
 const getTheatre = async (req, res) => {
   try {
     const response = await TheatreService.getTheatre(req.params.id);
@@ -39,6 +48,12 @@ const getTheatre = async (req, res) => {
   }
 };
 
+/**
+ * Get all theatres (with optional query parameters for filtering/pagination)
+ * @param req --> HTTP request object containing query parameters
+ * @param res --> HTTP response object to be returned
+ * @returns --> Returns the list of theatres or error response
+ */
 const getTheatres = async (req, res) => {
   try {
     const response = await TheatreService.getAllTheatres(req.query);
@@ -55,6 +70,12 @@ const getTheatres = async (req, res) => {
   }
 };
 
+/**
+ * Delete a theatre by ID
+ * @param req --> HTTP request object containing theatre ID as param
+ * @param res --> HTTP response object to be returned
+ * @returns --> Returns success message or error response
+ */
 const deleteTheatre = async (req, res) => {
   try {
     const response = await TheatreService.deleteTheatre(req.params.id);
@@ -71,6 +92,12 @@ const deleteTheatre = async (req, res) => {
   }
 };
 
+/**
+ * Update a theatre by ID
+ * @param req --> HTTP request object containing theatre ID as param and update body
+ * @param res --> HTTP response object to be returned
+ * @returns --> Returns the updated theatre or validation/error response
+ */
 const updateTheatre = async (req, res) => {
   try {
     const response = await TheatreService.updateTheatre(
@@ -82,7 +109,7 @@ const updateTheatre = async (req, res) => {
       return res.status(response.code).json(ErrorResponseBody);
     }
     SuccessResponseBody.data = response;
-    SuccessResponseBody.message = "Succecssfully updated the theatre";
+    SuccessResponseBody.message = "Successfully updated the theatre";
     return res.status(200).json(SuccessResponseBody);
   } catch (error) {
     console.log(error);
@@ -90,6 +117,7 @@ const updateTheatre = async (req, res) => {
     return res.status(500).json(ErrorResponseBody);
   }
 };
+
 module.exports = {
   create,
   getTheatre,

@@ -4,31 +4,39 @@ const {
   SuccessResponseBody,
   ErrorResponseBody,
 } = require("../utils/response-body");
+
 /**
- * Controller function to create a new movie
- * @route POST /movies
- * @returns {Object} movie created
+ * Create a new movie
+ * @param req --> HTTP request object containing movie details
+ * @param res --> HTTP response object to be returned
+ * @returns --> Returns the created movie or validation/error response
  */
 const createMovie = async (req, res) => {
   try {
     const response = await MovieService.createMovie(req.body);
-    // Error Caused by Frontend Request
+
     if (response.err) {
       ErrorResponseBody.err = response.err;
       ErrorResponseBody.message =
         "Validation Failed on Few Parameters of The Request Body";
       return res.status(response.code).json(ErrorResponseBody);
     }
-    SuccessResponseBody.data = movie;
+
+    SuccessResponseBody.data = response;
     return res.status(201).json(SuccessResponseBody);
   } catch (error) {
-    // Handles Backend Errors
     console.log(error);
     ErrorResponseBody.err = error;
     return res.status(500).json(ErrorResponseBody);
   }
 };
 
+/**
+ * Delete a movie by ID
+ * @param req --> HTTP request object containing movieId as param
+ * @param res --> HTTP response object to be returned
+ * @returns --> Returns success message or error response
+ */
 const deleteMovie = async (req, res) => {
   try {
     const { movieId } = req.params;
@@ -50,6 +58,12 @@ const deleteMovie = async (req, res) => {
   }
 };
 
+/**
+ * Get a movie by ID
+ * @param req --> HTTP request object containing movie ID as param
+ * @param res --> HTTP response object to be returned
+ * @returns --> Returns the movie details or error response
+ */
 const getMovie = async (req, res) => {
   try {
     const response = await MovieService.getMovieById(req.params.id);
@@ -61,18 +75,24 @@ const getMovie = async (req, res) => {
     return res.status(200).json(SuccessResponseBody);
   } catch (error) {
     console.log(error);
-    ErrorResponseBody.message = "Something went wrong while geting the movie";
+    ErrorResponseBody.message = "Something went wrong while getting the movie";
     return res.status(500).json(ErrorResponseBody);
   }
 };
 
+/**
+ * Update a movie by ID
+ * @param req --> HTTP request object containing movie ID as param and update body
+ * @param res --> HTTP response object to be returned
+ * @returns --> Returns the updated movie or validation/error response
+ */
 const updateMovie = async (req, res) => {
   try {
     const response = await MovieService.updateMovie(req.params.id, req.body);
     if (response.err) {
       ErrorResponseBody.err = response.err;
       ErrorResponseBody.message =
-        "The updates that we are trying to apply doesn't validate the schema";
+        "The updates that we are trying to apply don't validate the schema";
       return res.status(response.code).json(ErrorResponseBody);
     }
     SuccessResponseBody.data = response;
@@ -84,6 +104,12 @@ const updateMovie = async (req, res) => {
   }
 };
 
+/**
+ * Get all movies
+ * @param req --> HTTP request object containing optional query parameters for filtering/pagination
+ * @param res --> HTTP response object to be returned
+ * @returns --> Returns the list of movies or error response
+ */
 const getMovies = async (req, res) => {
   try {
     const response = await MovieService.fetchMovies(req.query);
