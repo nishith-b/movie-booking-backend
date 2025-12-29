@@ -1,4 +1,5 @@
 const Theatre = require("../models/theatre");
+const Movie = require("../models/movie");
 
 /**
  *
@@ -87,6 +88,11 @@ const getAllTheatres = async (data) => {
       //checks whether name is present in query params or not
       query.name = data.name;
     }
+
+    if (data && data.movieId) {
+      query.movies = { $all: data.movieId };
+    }
+
     if (data && data.limit) {
       pagination.limit = data.limit;
     }
@@ -181,6 +187,12 @@ const updateMoviesInTheatres = async (theatreId, movieIds, insert) => {
     await theatre.save();
     return theatre.populate("movies");
   } catch (error) {
+    if (error.name == "TypeError") {
+      return {
+        code: 404,
+        err: "No theatre found for the given id",
+      };
+    }
     console.log(error);
     throw error;
   }

@@ -13,6 +13,8 @@ const PORT = process.env.PORT || 5000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+mongoose.set("debug", true);
+
 MovieRoutes(app);
 TheatreRoutes(app);
 
