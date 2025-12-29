@@ -121,7 +121,6 @@ const updateTheatre = async (req, res) => {
   }
 };
 
-
 const updateMovies = async (req, res) => {
   try {
     const response = await TheatreService.updateMoviesInTheatres(
@@ -143,10 +142,28 @@ const updateMovies = async (req, res) => {
   }
 };
 
+const getMovies = async (req, res) => {
+  try {
+    const response = await TheatreService.getMoviesInATheatre(req.params.id);
+    if (response.err) {
+      ErrorResponseBody.err = response.err;
+      return res.status(response.code).json(ErrorResponseBody);
+    }
+    SuccessResponseBody.data = response;
+    SuccessResponseBody.message =
+      "Successfully fetched the movies for the theatre";
+    return res.status(200).json(SuccessResponseBody);
+  } catch (error) {
+    ErrorResponseBody.err = error;
+    return res.status(500).json(ErrorResponseBody);
+  }
+};
+
 module.exports = {
   create,
   getTheatre,
   getTheatres,
+  getMovies,
   deleteTheatre,
   updateTheatre,
   updateMovies,

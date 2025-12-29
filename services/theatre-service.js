@@ -1,5 +1,6 @@
 const Theatre = require("../models/theatre");
 const Movie = require("../models/movie");
+const mongoose = require("mongoose");
 
 /**
  *
@@ -198,6 +199,39 @@ const updateMoviesInTheatres = async (theatreId, movieIds, insert) => {
   }
 };
 
+const getMoviesInATheatre = async (id) => {
+  try {
+    // validate mongodb id format
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return {
+        err: "Invalid theatre id format",
+        code: 400,
+      };
+    }
+
+    const theatre = await Theatre.findById(id, {
+      name: 1,
+      movies: 1,
+      address: 1,
+    }).populate("movies");
+
+    if (!theatre) {
+      return {
+        err: "No theatre with the given id found",
+        code: 404,
+      };
+    }
+
+    return theatre;
+  } catch (error) {
+    console.error(error);
+    return {
+      err: "Internal server error",
+      code: 500,
+    };
+  }
+};
+
 module.exports = {
   createTheatre,
   deleteTheatre,
@@ -205,4 +239,5 @@ module.exports = {
   getAllTheatres,
   updateTheatre,
   updateMoviesInTheatres,
+  getMoviesInATheatre,
 };
