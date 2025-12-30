@@ -1,5 +1,8 @@
 const TheatreService = require("../services/theatre-service");
-const { SuccessResponseBody, ErrorResponseBody } = require("../utils/response-body");
+const {
+  SuccessResponseBody,
+  ErrorResponseBody,
+} = require("../utils/response-body");
 
 /**
  * Create a new theatre
@@ -118,10 +121,71 @@ const updateTheatre = async (req, res) => {
   }
 };
 
+const updateMovies = async (req, res) => {
+  try {
+    const response = await TheatreService.updateMoviesInTheatres(
+      req.params.id,
+      req.body.movieIds,
+      req.body.insert
+    );
+    if (response.err) {
+      ErrorResponseBody.err = response.err;
+      return res.status(response.code).json(ErrorResponseBody);
+    }
+    SuccessResponseBody.data = response;
+    SuccessResponseBody.message = "Successfully updated movies in the theatre";
+    return res.status(200).json(SuccessResponseBody);
+  } catch (error) {
+    console.log(error);
+    ErrorResponseBody.err = error;
+    return res.status(500).json(ErrorResponseBody);
+  }
+};
+
+const getMovies = async (req, res) => {
+  try {
+    const response = await TheatreService.getMoviesInATheatre(req.params.id);
+    if (response.err) {
+      ErrorResponseBody.err = response.err;
+      return res.status(response.code).json(ErrorResponseBody);
+    }
+    SuccessResponseBody.data = response;
+    SuccessResponseBody.message =
+      "Successfully fetched the movies for the theatre";
+    return res.status(200).json(SuccessResponseBody);
+  } catch (error) {
+    ErrorResponseBody.err = error;
+    return res.status(500).json(ErrorResponseBody);
+  }
+};
+
+const checkMovie = async (req, res) => {
+  try {
+    const { theatreId, movieId } = req.params;
+    const response = await TheatreService.checkMovieInATheatre(
+      theatreId,
+      movieId
+    );
+    if (response.err) {
+      ErrorResponseBody.err = response.err;
+      return res.status(response.code).json(ErrorResponseBody);
+    }
+    SuccessResponseBody.data = response;
+    SuccessResponseBody.message =
+      "Successfully checked if movie is present in the theatre";
+    return res.status(200).json(SuccessResponseBody);
+  } catch (error) {
+    ErrorResponseBody.err = error;
+    return res.status(500).json(ErrorResponseBody);
+  }
+};
 module.exports = {
   create,
   getTheatre,
   getTheatres,
+  getMovies,
   deleteTheatre,
   updateTheatre,
+  updateMovies,
+  checkMovie,
 };

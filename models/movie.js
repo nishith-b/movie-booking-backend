@@ -8,14 +8,14 @@ const movieSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: true,      
-      minLength: 2,        
+      required: true,
+      minLength: 2,
     },
 
     description: {
       type: String,
       required: true,
-      minLength: 5,    
+      minLength: 5,
     },
 
     casts: {
@@ -32,7 +32,7 @@ const movieSchema = new mongoose.Schema(
 
     language: {
       type: String,
-      default: "English",  // Default to English if not provided
+      default: "English", // Default to English if not provided
     },
 
     releaseDate: {
@@ -47,7 +47,7 @@ const movieSchema = new mongoose.Schema(
 
     releaseStatus: {
       type: String,
-      enum: ["RELEASED", "UPCOMING", "BLOCKED"], 
+      enum: ["RELEASED", "UPCOMING", "BLOCKED"],
       default: "RELEASED",
     },
   },

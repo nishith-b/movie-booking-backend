@@ -1,8 +1,10 @@
 const Theatre = require("../models/theatre");
+const Movie = require("../models/movie");
+const mongoose = require("mongoose");
 
 /**
- * 
- * @param data --> object containing details of the theatre to be created 
+ *
+ * @param data --> object containing details of the theatre to be created
  * @returns --> object with the new theatre details
  */
 const createTheatre = async (data) => {
@@ -22,9 +24,8 @@ const createTheatre = async (data) => {
   }
 };
 
-
 /**
- * 
+ *
  * @param id --> unique id using which we can identify the theatre has to be deleted
  * @returns --> returns deleted theatre object
  */
@@ -45,8 +46,8 @@ const deleteTheatre = async (id) => {
 };
 
 /**
- * 
- * @param id --> unique id which identifies theatres 
+ *
+ * @param id --> unique id which identifies theatres
  * @returns --> returns data of the particular theatre
  */
 const getTheatre = async (id) => {
@@ -67,7 +68,7 @@ const getTheatre = async (id) => {
 };
 
 /**
- * 
+ *
  * @param data --> the data to be used to filter out theates based on city/pincode
  * @returns --> returns an object with the filtered content of theatres
  */
@@ -88,6 +89,11 @@ const getAllTheatres = async (data) => {
       //checks whether name is present in query params or not
       query.name = data.name;
     }
+
+    if (data && data.movieId) {
+      query.movies = { $all: data.movieId };
+    }
+
     if (data && data.limit) {
       pagination.limit = data.limit;
     }
@@ -111,7 +117,7 @@ const getAllTheatres = async (data) => {
 };
 
 /**
- * 
+ *
  * @param id --> unique id to identify the theatre to be updated
  * @param data --> data to be used to update the thaetre
  * @returns --> returns new updated theatre object
@@ -144,10 +150,110 @@ const updateTheatre = async (id, data) => {
   }
 };
 
+/**
+ *
+ * @param theatreId --> unique id of the theatres for which we want to update movies
+ * @param movieIds --> array of movie ids that are expected to be updated in theatre
+ * @param insert --> boolean that tells whether we want insert movies or remove them
+ * @returns --> returns updated object
+ */
+const updateMoviesInTheatres = async (theatreId, movieIds, insert) => {
+  try {
+    const theatre = await Theatre.findById(theatreId);
+    if (!theatre) {
+      return {
+        err: "No such theatre found for the id provided",
+        code: 404,
+      };
+    }
+
+    if (insert) {
+      // add movies (avoid duplicates)
+      const existingMovieIds = new Set(
+        theatre.movies.map((id) => id.toString())
+      );
+
+      movieIds.forEach((movieId) => {
+        if (!existingMovieIds.has(movieId.toString())) {
+          theatre.movies.push(movieId);
+        }
+      });
+    } else {
+      // remove movies
+      theatre.movies = theatre.movies.filter(
+        (movieId) => !movieIds.includes(movieId.toString())
+      );
+    }
+
+    await theatre.save();
+    return theatre.populate("movies");
+  } catch (error) {
+    if (error.name == "TypeError") {
+      return {
+        code: 404,
+        err: "No theatre found for the given id",
+      };
+    }
+    console.log(error);
+    throw error;
+  }
+};
+
+const getMoviesInATheatre = async (id) => {
+  try {
+    // validate mongodb id format
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return {
+        err: "Invalid theatre id format",
+        code: 400,
+      };
+    }
+
+    const theatre = await Theatre.findById(id, {
+      name: 1,
+      movies: 1,
+      address: 1,
+    }).populate("movies");
+
+    if (!theatre) {
+      return {
+        err: "No theatre with the given id found",
+        code: 404,
+      };
+    }
+
+    return theatre;
+  } catch (error) {
+    console.error(error);
+    return {
+      err: "Internal server error",
+      code: 500,
+    };
+  }
+};
+
+const checkMovieInATheatre = async (theatreId, movieId) => {
+  try {
+    let response = await Theatre.findById(theatreId);
+    if (!response) {
+      return {
+        err: "No such theatre found for the given id",
+        code: 404,
+      };
+    }
+    return response.movies.includes(movieId);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
 module.exports = {
   createTheatre,
   deleteTheatre,
   getTheatre,
   getAllTheatres,
   updateTheatre,
+  updateMoviesInTheatres,
+  getMoviesInATheatre,
+  checkMovieInATheatre,
 };
