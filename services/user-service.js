@@ -1,7 +1,19 @@
 const User = require("../models/user");
+const { USER_ROLE, USER_STATUS } = require("../utils/constants");
 
 const createUser = async (data) => {
   try {
+    // If role is CUSTOMER or not provided
+    if (!data.userRole || data.userRole === USER_ROLE.customer) {
+      if (data.userStatus && data.userStatus !== USER_STATUS.approved) {
+        throw { err: "We cannot set any other status for customer", code: 400 };
+      }
+    }
+
+    // If role exists and is NOT CUSTOMER
+    if (data.userRole && data.userRole !== USER_ROLE.customer) {
+      data.userStatus = USER_STATUS.pending;
+    }
     const response = await User.create(data);
     return response;
   } catch (error) {
