@@ -11,9 +11,13 @@ const signup = async (req, res) => {
     SuccessResponseBody.message = "Successfully Registered a user";
     return res.status(201).json(SuccessResponseBody);
   } catch (error) {
+    if (error.err) {
+      ErrorResponseBody.err = error.err;
+      return res.status(error.code).json(ErrorResponseBody);
+    }
     ErrorResponseBody.err = error;
     return res.status(500).json(ErrorResponseBody);
   }
 };
 
-module.exports = {signup};
+module.exports = { signup };
