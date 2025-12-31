@@ -60,13 +60,13 @@ userSchema.pre("save", async function () {
 });
 
 /**
- * This is going to be an instance method for user, to compare a password with the stored     encrypted password
+ * This is going to be an instance method for user, to compare a password with the stored
+ * encrypted password
  * @param plainPassword --> input password given by user in signin request
  * @returns boolean denoting whether passwords are same or not ?
  */
-userSchema.methods.isValidPassword = async (plainPassword) => {
-  const currentUser = this;
-  const compare = await bcrypt.compare(plainPassword, currentUser.password);
+userSchema.methods.isValidPassword = async function (plainPassword) {
+  const compare = await bcrypt.compare(plainPassword, this.password);
   return compare;
 };
 
