@@ -23,6 +23,7 @@ const createMovie = async (req, res) => {
     }
 
     SuccessResponseBody.data = response;
+    SuccessResponseBody.message = "Successfully created the movie"
     return res.status(201).json(SuccessResponseBody);
   } catch (error) {
     console.log(error);
