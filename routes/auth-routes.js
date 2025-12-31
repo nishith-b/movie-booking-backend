@@ -8,7 +8,11 @@ const routes = (app) => {
     authController.signup
   );
 
-  app.post("/mba/api/v1/auth/signin",authController.signin)
+  app.post(
+    "/mba/api/v1/auth/signin",
+    authMiddleware.validateSigninRequest,
+    authController.signin
+  );
 };
 
 module.exports = routes;
