@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const MovieRoutes = require("./routes/movie-routes");
 const TheatreRoutes = require("./routes/theatre-routes");
 const AuthRoutes = require("./routes/auth-routes");
+const UserRoutes = require("./routes/user-routes");
 
 dotenv.config();
 
@@ -19,6 +20,7 @@ mongoose.set("debug", true);
 MovieRoutes(app);
 TheatreRoutes(app);
 AuthRoutes(app);
+UserRoutes(app);
 
 const startServer = async () => {
   try {
