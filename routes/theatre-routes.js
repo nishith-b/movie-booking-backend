@@ -1,5 +1,6 @@
 const theatreController = require("../controllers/theatre-controller");
 const theatreMiddleware = require("../middlewares/theatre-middleware");
+const authMiddleware = require("../middlewares/auth-middleware");
 
 /**
  * Theatre Routes
@@ -27,7 +28,11 @@ const routes = (app) => {
 
   // DELETE a theatre by ID
   // Endpoint: DELETE /mba/api/v1/theatres/:id
-  app.delete("/mba/api/v1/theatres/:id", theatreController.deleteTheatre);
+  app.delete(
+    "/mba/api/v1/theatres/:id",
+    authMiddleware.isAuthenticated,
+    theatreController.deleteTheatre
+  );
 
   // UPDATE a theatre by ID (Partial update using PATCH)
   // Endpoint: PATCH /mba/api/v1/theatres/:id

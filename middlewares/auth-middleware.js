@@ -1,3 +1,5 @@
+const jwt = require("jsonwebtoken");
+const UserService = require("../services/user-service");
 const { ErrorResponseBody } = require("../utils/response-body");
 
 /**
@@ -53,7 +55,37 @@ const validateSigninRequest = async (req, res, next) => {
   next();
 };
 
+const isAuthenticated = async (req, res, next) => {
+  try {
+    const token = req.headers["x-access-token"];
+    if (!token) {
+      ErrorResponseBody.err = "No token provided";
+      return res.status(403).json(ErrorResponseBody);
+    }
+    const response = jwt.verify(token, process.env.AUTH_KEY);
+    if (!response) {
+      ErrorResponseBody.err = "Token not verified";
+      return res.status(401).json(ErrorResponseBody);
+    }
+    const user = await UserService.getUserById(response.id);
+    req.user = user.id;
+    next();
+  } catch (error) {
+    if (error.name == "JsonWebTokenError") {
+      ErrorResponseBody.err = error.message;
+      return res.status(401).json(ErrorResponseBody);
+    }
+    if (error.code == 404) {
+      ErrorResponseBody.err = "User doesnot exist";
+      return res.status(error.code).json(ErrorResponseBody);
+    }
+    ErrorResponseBody.err = error;
+    return res.status(500).json(ErrorResponseBody);
+  }
+};
+
 module.exports = {
   validateSignupRequest,
   validateSigninRequest,
+  isAuthenticated,
 };
