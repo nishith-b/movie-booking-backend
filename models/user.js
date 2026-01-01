@@ -50,10 +50,9 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-userSchema.pre("save", async function () {
-  // a trigger to encrypt the plain password before saving the user
-
-  if (!this.isModified("password")) return; // prevents double hashing while update
+userSchema.pre("save", async function (next) {
+  // Encrypt password before saving
+  if (!this.isModified("password")) return;
 
   const hash = await bcrypt.hash(this.password, 10);
   this.password = hash;

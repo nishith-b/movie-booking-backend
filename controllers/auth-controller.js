@@ -54,5 +54,35 @@ const signin = async (req, res) => {
   }
 };
 
+const resetPassword = async (req, res) => {
+  try {
+    const user = await UserService.getUserById(req.user);
 
-module.exports = { signup, signin };
+    const isOldPasswordCorrect = await user.isValidPassword(
+      req.body.oldPassword
+    );
+
+    if (!isOldPasswordCorrect) {
+      return res.status(403).json({
+        err: "Invalid old password, Please provide correct password",
+      });
+    }
+
+    // update password properly
+    user.password = req.body.newPassword;
+    await user.save(); // pre("save") will hash it
+
+    // remove password before sending response(security concerns)
+    const userResponse = user.toObject();
+    delete userResponse.password;
+
+    return res.status(200).json({
+      message: "Password updated successfully",
+      data: userResponse,
+    });
+  } catch (error) {
+    return res.status(500).json({ err: error });
+  }
+};
+
+module.exports = { signup, signin, resetPassword };
