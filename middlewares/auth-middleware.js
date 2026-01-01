@@ -84,8 +84,26 @@ const isAuthenticated = async (req, res, next) => {
   }
 };
 
+const validateResetPasswordRequest = (req, res, next) => {
+  // validate old password presence
+  if (!req.body.oldPassword) {
+    ErrorResponseBody.err = "Missing the old password in the request";
+    return res.status(400).json(ErrorResponseBody);
+  }
+
+  // validate new password presence
+  if (!req.body.newPassword) {
+    ErrorResponseBody.err = "Missing the new password in the request";
+    return res.status(400).json(ErrorResponseBody);
+  }
+
+  // we can proceed
+  next();
+};
+
 module.exports = {
   validateSignupRequest,
   validateSigninRequest,
+  validateResetPasswordRequest,
   isAuthenticated,
 };
