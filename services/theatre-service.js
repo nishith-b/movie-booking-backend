@@ -105,7 +105,7 @@ const getAllTheatres = async (data) => {
     }
     const response = await Theatre.find(query, {}, pagination);
     if (!response || response.length === 0) {
-      return {
+      throw {
         error: "No record of a theatre found for the given filter",
         code: StatusCodes.NOT_FOUND,
       };
