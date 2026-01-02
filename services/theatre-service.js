@@ -1,6 +1,7 @@
 const Theatre = require("../models/theatre");
 const Movie = require("../models/movie");
 const mongoose = require("mongoose");
+const { StatusCodes } = require("http-status-codes");
 
 /**
  *
@@ -12,12 +13,12 @@ const createTheatre = async (data) => {
     const response = await Theatre.create(data);
     return response;
   } catch (error) {
-    if (error.name == "ValidationError") {
+    if (error.name === "ValidationError") {
       let err = {};
       Object.keys(error.errors).forEach((key) => {
         err[key] = error.errors[key].message;
       });
-      return { error: err, code: 422 };
+      throw { err: err, code: StatusCodes.UNPROCESSABLE_ENTITY };
     }
     console.log(error);
     throw error;
@@ -33,9 +34,9 @@ const deleteTheatre = async (id) => {
   try {
     const response = await Theatre.findByIdAndDelete(id);
     if (!response) {
-      return {
+      throw {
         error: "No record of a theatre found for the given id",
-        code: 404,
+        code: StatusCodes.NOT_FOUND,
       };
     }
     return response;
@@ -55,9 +56,9 @@ const getTheatre = async (id) => {
     const response = await Theatre.findById(id);
     if (!response) {
       // no record found for the given id
-      return {
+      throw {
         error: "No Theatre found for the given id",
-        code: 404,
+        code: StatusCodes.NOT_FOUND,
       };
     }
     return response;
@@ -104,9 +105,9 @@ const getAllTheatres = async (data) => {
     }
     const response = await Theatre.find(query, {}, pagination);
     if (!response || response.length === 0) {
-      return {
+      throw {
         error: "No record of a theatre found for the given filter",
-        code: 404,
+        code: StatusCodes.NOT_FOUND,
       };
     }
     return response;
@@ -131,9 +132,9 @@ const updateTheatre = async (id, data) => {
 
     if (!response) {
       // no record found for the given id
-      return {
+      throw {
         error: "No Theatre found for the given id",
-        code: 404,
+        code: StatusCodes.NOT_FOUND,
       };
     }
     return response;
@@ -144,7 +145,7 @@ const updateTheatre = async (id, data) => {
       Object.keys(error.errors).forEach((key) => {
         err[key] = error.errors[key].message;
       });
-      return { error: err, code: 422 };
+      return { error: err, code: StatusCodes.UNPROCESSABLE_ENTITY };
     }
     throw error;
   }
@@ -161,9 +162,9 @@ const updateMoviesInTheatres = async (theatreId, movieIds, insert) => {
   try {
     const theatre = await Theatre.findById(theatreId);
     if (!theatre) {
-      return {
+      throw {
         err: "No such theatre found for the id provided",
-        code: 404,
+        code: StatusCodes.NOT_FOUND,
       };
     }
 
@@ -189,8 +190,8 @@ const updateMoviesInTheatres = async (theatreId, movieIds, insert) => {
     return theatre.populate("movies");
   } catch (error) {
     if (error.name == "TypeError") {
-      return {
-        code: 404,
+      throw {
+        code: StatusCodes.NOT_FOUND,
         err: "No theatre found for the given id",
       };
     }
@@ -203,9 +204,9 @@ const getMoviesInATheatre = async (id) => {
   try {
     // validate mongodb id format
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      return {
+      throw {
         err: "Invalid theatre id format",
-        code: 400,
+        code: StatusCodes.BAD_REQUEST,
       };
     }
 
@@ -216,18 +217,18 @@ const getMoviesInATheatre = async (id) => {
     }).populate("movies");
 
     if (!theatre) {
-      return {
+      throw {
         err: "No theatre with the given id found",
-        code: 404,
+        code: StatusCodes.NOT_FOUND,
       };
     }
 
     return theatre;
   } catch (error) {
     console.error(error);
-    return {
+    throw {
       err: "Internal server error",
-      code: 500,
+      code: StatusCodes.INTERNAL_SERVER_ERROR,
     };
   }
 };
@@ -236,9 +237,9 @@ const checkMovieInATheatre = async (theatreId, movieId) => {
   try {
     let response = await Theatre.findById(theatreId);
     if (!response) {
-      return {
+      throw {
         err: "No such theatre found for the given id",
-        code: 404,
+        code: StatusCodes.NOT_FOUND,
       };
     }
     return response.movies.includes(movieId);
