@@ -6,6 +6,14 @@ const {
   ErrorResponseBody,
 } = require("../utils/response-body");
 
+/**
+ * Update a user's role or status
+ *
+ * @param req --> HTTP request object containing update data in body and user ID in route params
+ * @param res --> HTTP response object to be returned
+ *
+ * @returns --> Returns updated user details (without password) or error response
+ */
 const update = async (req, res) => {
   try {
     const response = await UserService.updateUserRoleOrStatus(
@@ -13,7 +21,7 @@ const update = async (req, res) => {
       req.params.id
     );
 
-    // remove password before sending response(security concerns)
+    // remove password before sending response (security concerns)
     const userResponse = response.toObject();
     delete userResponse.password;
 

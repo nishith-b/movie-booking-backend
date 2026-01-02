@@ -6,6 +6,14 @@ const {
   ErrorResponseBody,
 } = require("../utils/response-body");
 
+/**
+ * Register a new user
+ *
+ * @param req --> HTTP request object containing user details in request body
+ * @param res --> HTTP response object to be returned
+ *
+ * @returns --> Returns created user details or validation / error response
+ */
 const signup = async (req, res) => {
   try {
     const response = await UserService.createUser(req.body);
@@ -22,6 +30,14 @@ const signup = async (req, res) => {
   }
 };
 
+/**
+ * Login a user and generate JWT token
+ *
+ * @param req --> HTTP request object containing email and password in request body
+ * @param res --> HTTP response object to be returned
+ *
+ * @returns --> Returns user details along with authentication token or error response
+ */
 const signin = async (req, res) => {
   try {
     const user = await UserService.getUserByEmail(req.body.email);
@@ -54,6 +70,14 @@ const signin = async (req, res) => {
   }
 };
 
+/**
+ * Reset password for an authenticated user
+ *
+ * @param req --> HTTP request object containing oldPassword and newPassword in body
+ * @param res --> HTTP response object to be returned
+ *
+ * @returns --> Returns success message and updated user details or error response
+ */
 const resetPassword = async (req, res) => {
   try {
     const user = await UserService.getUserById(req.user);
@@ -72,7 +96,7 @@ const resetPassword = async (req, res) => {
     user.password = req.body.newPassword;
     await user.save(); // pre("save") will hash it
 
-    // remove password before sending response(security concerns)
+    // remove password before sending response (security concerns)
     const userResponse = user.toObject();
     delete userResponse.password;
 

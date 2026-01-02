@@ -7,9 +7,11 @@ const {
 
 /**
  * Create a new theatre
- * @param req --> HTTP request object containing theatre details in body
+ *
+ * @param req --> HTTP request object containing theatre details in request body
  * @param res --> HTTP response object to be returned
- * @returns --> Returns the created theatre or validation/error response
+ *
+ * @returns --> Returns the created theatre or validation / error response
  */
 const create = async (req, res) => {
   try {
@@ -33,9 +35,11 @@ const create = async (req, res) => {
 
 /**
  * Get a theatre by ID
- * @param req --> HTTP request object containing theatre ID as param
+ *
+ * @param req --> HTTP request object containing theatre ID in route params
  * @param res --> HTTP response object to be returned
- * @returns --> Returns the theatre details or error response
+ *
+ * @returns --> Returns theatre details or error response
  */
 const getTheatre = async (req, res) => {
   try {
@@ -58,10 +62,12 @@ const getTheatre = async (req, res) => {
 };
 
 /**
- * Get all theatres (with optional query parameters for filtering/pagination)
- * @param req --> HTTP request object containing query parameters
+ * Get all theatres
+ *
+ * @param req --> HTTP request object containing optional query params
  * @param res --> HTTP response object to be returned
- * @returns --> Returns the list of theatres or error response
+ *
+ * @returns --> Returns list of theatres or error response
  */
 const getTheatres = async (req, res) => {
   try {
@@ -83,8 +89,10 @@ const getTheatres = async (req, res) => {
 
 /**
  * Delete a theatre by ID
- * @param req --> HTTP request object containing theatre ID as param
+ *
+ * @param req --> HTTP request object containing theatre ID in route params
  * @param res --> HTTP response object to be returned
+ *
  * @returns --> Returns success message or error response
  */
 const deleteTheatre = async (req, res) => {
@@ -107,9 +115,11 @@ const deleteTheatre = async (req, res) => {
 
 /**
  * Update a theatre by ID
- * @param req --> HTTP request object containing theatre ID as param and update body
+ *
+ * @param req --> HTTP request object containing theatre ID in params and update data in body
  * @param res --> HTTP response object to be returned
- * @returns --> Returns the updated theatre or validation/error response
+ *
+ * @returns --> Returns updated theatre or validation / error response
  */
 const updateTheatre = async (req, res) => {
   try {
@@ -125,7 +135,7 @@ const updateTheatre = async (req, res) => {
       ErrorResponseBody.err = error.error;
       return res.status(error.code).json(ErrorResponseBody);
     }
-    console.log(error);
+    console.error(error);
     ErrorResponseBody.err = error;
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
@@ -133,6 +143,14 @@ const updateTheatre = async (req, res) => {
   }
 };
 
+/**
+ * Add or remove movies in a theatre
+ *
+ * @param req --> HTTP request object containing theatre ID in params and movieIds + insert flag in body
+ * @param res --> HTTP response object to be returned
+ *
+ * @returns --> Returns updated theatre-movie mapping or error response
+ */
 const updateMovies = async (req, res) => {
   try {
     const response = await TheatreService.updateMoviesInTheatres(
@@ -155,6 +173,14 @@ const updateMovies = async (req, res) => {
   }
 };
 
+/**
+ * Get all movies running in a specific theatre
+ *
+ * @param req --> HTTP request object containing theatre ID in route params
+ * @param res --> HTTP response object to be returned
+ *
+ * @returns --> Returns list of movies in the theatre or error response
+ */
 const getMovies = async (req, res) => {
   try {
     const response = await TheatreService.getMoviesInATheatre(req.params.id);
@@ -174,6 +200,14 @@ const getMovies = async (req, res) => {
   }
 };
 
+/**
+ * Check if a movie is running in a specific theatre
+ *
+ * @param req --> HTTP request object containing theatreId and movieId in route params
+ * @param res --> HTTP response object to be returned
+ *
+ * @returns --> Returns boolean/status indicating movie presence or error response
+ */
 const checkMovie = async (req, res) => {
   try {
     const { theatreId, movieId } = req.params;
@@ -196,6 +230,7 @@ const checkMovie = async (req, res) => {
       .json(ErrorResponseBody);
   }
 };
+
 module.exports = {
   create,
   getTheatre,

@@ -8,9 +8,11 @@ const {
 
 /**
  * Create a new movie
- * @param req --> HTTP request object containing movie details
+ *
+ * @param req --> HTTP request object containing movie details in request body
  * @param res --> HTTP response object to be returned
- * @returns --> Returns the created movie or validation/error response
+ *
+ * @returns --> Returns the created movie or validation / error response
  */
 const createMovie = async (req, res) => {
   try {
@@ -34,8 +36,10 @@ const createMovie = async (req, res) => {
 
 /**
  * Delete a movie by ID
- * @param req --> HTTP request object containing movieId as param
+ *
+ * @param req --> HTTP request object containing movieId in route params
  * @param res --> HTTP response object to be returned
+ *
  * @returns --> Returns success message or error response
  */
 const deleteMovie = async (req, res) => {
@@ -49,7 +53,7 @@ const deleteMovie = async (req, res) => {
       ErrorResponseBody.err = error.error;
       return res.status(error.code).json(ErrorResponseBody);
     }
-    console.log(error);
+    console.error(error);
     ErrorResponseBody.message = "Something went wrong while deleting the movie";
     ErrorResponseBody.err = error;
     return res
@@ -60,9 +64,11 @@ const deleteMovie = async (req, res) => {
 
 /**
  * Get a movie by ID
- * @param req --> HTTP request object containing movie ID as param
+ *
+ * @param req --> HTTP request object containing movie ID in route params
  * @param res --> HTTP response object to be returned
- * @returns --> Returns the movie details or error response
+ *
+ * @returns --> Returns movie details or error response
  */
 const getMovie = async (req, res) => {
   try {
@@ -74,7 +80,7 @@ const getMovie = async (req, res) => {
       ErrorResponseBody.err = error.error;
       return res.status(error.code).json(ErrorResponseBody);
     }
-    console.log(error);
+    console.error(error);
     ErrorResponseBody.message = "Something went wrong while getting the movie";
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
@@ -84,9 +90,11 @@ const getMovie = async (req, res) => {
 
 /**
  * Update a movie by ID
- * @param req --> HTTP request object containing movie ID as param and update body
+ *
+ * @param req --> HTTP request object containing movie ID in params and update data in body
  * @param res --> HTTP response object to be returned
- * @returns --> Returns the updated movie or validation/error response
+ *
+ * @returns --> Returns updated movie or validation / error response
  */
 const updateMovie = async (req, res) => {
   try {
@@ -100,17 +108,21 @@ const updateMovie = async (req, res) => {
         "The updates that we are trying to apply don't validate the schema";
       return res.status(error.code).json(ErrorResponseBody);
     }
-    console.log(error);
+    console.error(error);
     ErrorResponseBody.err = error;
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(ErrorResponseBody);
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json(ErrorResponseBody);
   }
 };
 
 /**
  * Get all movies
- * @param req --> HTTP request object containing optional query parameters for filtering/pagination
+ *
+ * @param req --> HTTP request object containing optional query params for filtering / pagination
  * @param res --> HTTP response object to be returned
- * @returns --> Returns the list of movies or error response
+ *
+ * @returns --> Returns list of movies or error response
  */
 const getMovies = async (req, res) => {
   try {
