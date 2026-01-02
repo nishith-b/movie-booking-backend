@@ -34,7 +34,7 @@ const deleteTheatre = async (id) => {
   try {
     const response = await Theatre.findByIdAndDelete(id);
     if (!response) {
-      return {
+      throw {
         error: "No record of a theatre found for the given id",
         code: StatusCodes.NOT_FOUND,
       };

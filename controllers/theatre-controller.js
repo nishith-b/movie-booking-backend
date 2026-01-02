@@ -89,14 +89,14 @@ const getTheatres = async (req, res) => {
 const deleteTheatre = async (req, res) => {
   try {
     const response = await TheatreService.deleteTheatre(req.params.id);
-    if (response.error) {
-      ErrorResponseBody.err = response.error;
-      return res.status(response.code).json(ErrorResponseBody);
-    }
     SuccessResponseBody.data = response;
     SuccessResponseBody.message = "Successfully deleted the given theatre";
     return res.status(StatusCodes.OK).json(SuccessResponseBody);
   } catch (error) {
+    if (error.error) {
+      ErrorResponseBody.err = error.error;
+      return res.status(error.code).json(ErrorResponseBody);
+    }
     ErrorResponseBody.err = error;
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)

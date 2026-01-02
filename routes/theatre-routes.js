@@ -22,7 +22,10 @@ const routes = (app) => {
 
   // READ all theatres with optional query parameters (filtering/pagination)
   // Endpoint: GET /mba/api/v1/theatres
-  app.get("/mba/api/v1/theatres", theatreController.getTheatres);
+  app.get(
+    "/mba/api/v1/theatres",
+    theatreController.getTheatres
+  );
 
   // READ a theatre by ID
   // Endpoint: GET /mba/api/v1/theatres/:id
@@ -33,6 +36,7 @@ const routes = (app) => {
   app.delete(
     "/mba/api/v1/theatres/:id",
     authMiddleware.isAuthenticated,
+    authMiddleware.isAdminOrClient,
     theatreController.deleteTheatre
   );
 
