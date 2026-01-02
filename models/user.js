@@ -2,6 +2,10 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const { USER_ROLE, USER_STATUS } = require("../utils/constants");
 
+/**
+ * Defines the schema of user resource to be stored on the DB
+ */
+
 const userSchema = new mongoose.Schema(
   {
     name: {

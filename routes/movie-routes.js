@@ -4,14 +4,24 @@ const authMiddlewares = require("../middlewares/auth-middleware");
 
 /**
  * Movie Routes
- * @param app - Express app instance
- * Defines all API routes for Movie resource
+ *
+ * @param app --> Express application instance
+ *
+ * Defines all API routes related to movie management,
+ * including creation, retrieval, updates, and deletion.
  */
 const routes = (app) => {
-  // CREATE a new movie
-  // Endpoint: POST /mba/api/v1/movies
-  // Middleware: validate request body
-  // Controller: createMovie
+  /**
+   * CREATE a new movie
+   *
+   * Endpoint: POST /mba/api/v1/movies
+   * Access: Authenticated Admin or Client
+   * Middleware:
+   *  - isAuthenticated
+   *  - isAdminOrClient
+   *  - validateCreateMovieRequest
+   * Controller: createMovie
+   */
   app.post(
     "/mba/api/v1/movies",
     authMiddlewares.isAuthenticated,
@@ -20,8 +30,12 @@ const routes = (app) => {
     movieController.createMovie
   );
 
-  // DELETE a movie by ID
-  // Endpoint: DELETE /mba/api/v1/movies/:movieId
+  /**
+   * DELETE a movie by ID
+   *
+   * Endpoint: DELETE /mba/api/v1/movies/:movieId
+   * Access: Authenticated Admin or Client
+   */
   app.delete(
     "/mba/api/v1/movies/:movieId",
     authMiddlewares.isAuthenticated,
@@ -29,12 +43,20 @@ const routes = (app) => {
     movieController.deleteMovie
   );
 
-  // READ a movie by ID
-  // Endpoint: GET /mba/api/v1/movies/:id
+  /**
+   * READ a movie by ID
+   *
+   * Endpoint: GET /mba/api/v1/movies/:id
+   * Access: Public
+   */
   app.get("/mba/api/v1/movies/:id", movieController.getMovie);
 
-  // UPDATE a movie by ID (Full update using PUT)
-  // Endpoint: PUT /mba/api/v1/movies/:id
+  /**
+   * UPDATE a movie by ID (Full update using PUT)
+   *
+   * Endpoint: PUT /mba/api/v1/movies/:id
+   * Access: Authenticated Admin or Client
+   */
   app.put(
     "/mba/api/v1/movies/:id",
     authMiddlewares.isAuthenticated,
@@ -42,8 +64,12 @@ const routes = (app) => {
     movieController.updateMovie
   );
 
-  // UPDATE a movie by ID (Partial update using PATCH)
-  // Endpoint: PATCH /mba/api/v1/movies/:id
+  /**
+   * UPDATE a movie by ID (Partial update using PATCH)
+   *
+   * Endpoint: PATCH /mba/api/v1/movies/:id
+   * Access: Authenticated Admin or Client
+   */
   app.patch(
     "/mba/api/v1/movies/:id",
     authMiddlewares.isAuthenticated,
@@ -51,8 +77,13 @@ const routes = (app) => {
     movieController.updateMovie
   );
 
-  // READ all movies with optional query parameters (filtering/pagination)
-  // Endpoint: GET /mba/api/v1/movies
+  /**
+   * READ all movies
+   *
+   * Endpoint: GET /mba/api/v1/movies
+   * Access: Public
+   * Supports optional query parameters for filtering / pagination
+   */
   app.get("/mba/api/v1/movies", movieController.getMovies);
 };
 
