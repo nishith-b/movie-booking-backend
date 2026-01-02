@@ -22,7 +22,12 @@ const routes = (app) => {
 
   // DELETE a movie by ID
   // Endpoint: DELETE /mba/api/v1/movies/:movieId
-  app.delete("/mba/api/v1/movies/:movieId", movieController.deleteMovie);
+  app.delete(
+    "/mba/api/v1/movies/:movieId",
+    authMiddlewares.isAuthenticated,
+    authMiddlewares.isAdminOrClient,
+    movieController.deleteMovie
+  );
 
   // READ a movie by ID
   // Endpoint: GET /mba/api/v1/movies/:id

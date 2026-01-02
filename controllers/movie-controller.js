@@ -1,6 +1,5 @@
-const {StatusCodes} = require("http-status-codes")
+const { StatusCodes } = require("http-status-codes");
 const MovieService = require("../services/movie-service");
-
 
 const {
   SuccessResponseBody,
@@ -27,7 +26,9 @@ const createMovie = async (req, res) => {
       return res.status(error.code).json(ErrorResponseBody);
     }
     ErrorResponseBody.err = error;
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(ErrorResponseBody);
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json(ErrorResponseBody);
   }
 };
 
@@ -40,21 +41,20 @@ const createMovie = async (req, res) => {
 const deleteMovie = async (req, res) => {
   try {
     const { movieId } = req.params;
-
     const response = await MovieService.deleteMovie(movieId);
-
-    if (response.error) {
-      ErrorResponseBody.err = response.error;
-      return res.status(response.code).json(ErrorResponseBody);
-    }
-
     SuccessResponseBody.data = response;
-    return res.status(200).json(SuccessResponseBody);
+    return res.status(StatusCodes.OK).json(SuccessResponseBody);
   } catch (error) {
+    if (error.error) {
+      ErrorResponseBody.err = error.error;
+      return res.status(error.code).json(ErrorResponseBody);
+    }
     console.log(error);
     ErrorResponseBody.message = "Something went wrong while deleting the movie";
     ErrorResponseBody.err = error;
-    return res.status(500).json(ErrorResponseBody);
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json(ErrorResponseBody);
   }
 };
 
