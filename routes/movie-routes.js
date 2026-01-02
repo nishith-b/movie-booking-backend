@@ -35,11 +35,21 @@ const routes = (app) => {
 
   // UPDATE a movie by ID (Full update using PUT)
   // Endpoint: PUT /mba/api/v1/movies/:id
-  app.put("/mba/api/v1/movies/:id", movieController.updateMovie);
+  app.put(
+    "/mba/api/v1/movies/:id",
+    authMiddlewares.isAuthenticated,
+    authMiddlewares.isAdminOrClient,
+    movieController.updateMovie
+  );
 
   // UPDATE a movie by ID (Partial update using PATCH)
   // Endpoint: PATCH /mba/api/v1/movies/:id
-  app.patch("/mba/api/v1/movies/:id", movieController.updateMovie);
+  app.patch(
+    "/mba/api/v1/movies/:id",
+    authMiddlewares.isAuthenticated,
+    authMiddlewares.isAdminOrClient,
+    movieController.updateMovie
+  );
 
   // READ all movies with optional query parameters (filtering/pagination)
   // Endpoint: GET /mba/api/v1/movies
