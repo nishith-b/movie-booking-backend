@@ -1,3 +1,4 @@
+const { StatusCodes } = require("http-status-codes");
 const Movie = require("../models/movie");
 
 /**
@@ -34,7 +35,7 @@ const createMovie = async (data) => {
         err[key] = error.errors[key].message;
       });
       console.log(err);
-      return { err: err, code: 422 };
+      throw { err: err, code: StatusCodes.UNPROCESSABLE_ENTITY };
     } else {
       throw new error();
     }

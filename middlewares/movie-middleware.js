@@ -1,3 +1,4 @@
+const { StatusCodes } = require("http-status-codes");
 const { ErrorResponseBody } = require("../utils/response-body");
 
 /**
@@ -12,13 +13,13 @@ const validateCreateMovieRequest = async (req, res, next) => {
   if (!req.body.name) {
     ErrorResponseBody.err =
       "The name of the movie is not present in the request sent";
-    return res.status(400).json(ErrorResponseBody);
+    return res.status(StatusCodes.BAD_REQUEST).json(ErrorResponseBody);
   }
 
   if (!req.body.description) {
     ErrorResponseBody.err =
       "The description of the movie not present in the request";
-    return res.status(400).json(ErrorResponseBody);
+    return res.status(StatusCodes.BAD_REQUEST).json(ErrorResponseBody);
   }
 
   if (
@@ -27,25 +28,25 @@ const validateCreateMovieRequest = async (req, res, next) => {
     !Array.isArray(req.body.casts)
   ) {
     ErrorResponseBody.err = "The cast of the movie not present in the request";
-    return res.status(400).json(ErrorResponseBody);
+    return res.status(StatusCodes.BAD_REQUEST).json(ErrorResponseBody);
   }
 
   if (!req.body.trailerURL) {
     ErrorResponseBody.err =
       "The Trailer URL of the movie not present in the request";
-    return res.status(400).json(ErrorResponseBody);
+    return res.status(StatusCodes.BAD_REQUEST).json(ErrorResponseBody);
   }
 
   if (!req.body.releaseDate) {
     ErrorResponseBody.err =
       "The Releaese Date of the movie not present in the request";
-    return res.status(400).json(ErrorResponseBody);
+    return res.status(StatusCodes.BAD_REQUEST).json(ErrorResponseBody);
   }
 
   if (!req.body.director) {
     ErrorResponseBody.err =
       "The Director of the movie not present in the request";
-    return res.status(400).json(ErrorResponseBody);
+    return res.status(StatusCodes.BAD_REQUEST).json(ErrorResponseBody);
   }
 
   next();

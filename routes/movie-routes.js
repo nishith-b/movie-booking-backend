@@ -1,5 +1,6 @@
 const movieController = require("../controllers/movie-controller");
 const movieMiddlewares = require("../middlewares/movie-middleware");
+const authMiddlewares = require("../middlewares/auth-middleware");
 
 /**
  * Movie Routes
@@ -13,6 +14,8 @@ const routes = (app) => {
   // Controller: createMovie
   app.post(
     "/mba/api/v1/movies",
+    authMiddlewares.isAuthenticated,
+    authMiddlewares.isAdminOrClient,
     movieMiddlewares.validateCreateMovieRequest,
     movieController.createMovie
   );

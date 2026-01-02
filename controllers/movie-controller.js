@@ -1,4 +1,6 @@
+const {StatusCodes} = require("http-status-codes")
 const MovieService = require("../services/movie-service");
+
 
 const {
   SuccessResponseBody,
@@ -14,21 +16,18 @@ const {
 const createMovie = async (req, res) => {
   try {
     const response = await MovieService.createMovie(req.body);
-
-    if (response.err) {
-      ErrorResponseBody.err = response.err;
+    SuccessResponseBody.data = response;
+    SuccessResponseBody.message = "Successfully created the movie";
+    return res.status(StatusCodes.CREATED).json(SuccessResponseBody);
+  } catch (error) {
+    if (error.err) {
+      ErrorResponseBody.err = error.err;
       ErrorResponseBody.message =
         "Validation Failed on Few Parameters of The Request Body";
-      return res.status(response.code).json(ErrorResponseBody);
+      return res.status(error.code).json(ErrorResponseBody);
     }
-
-    SuccessResponseBody.data = response;
-    SuccessResponseBody.message = "Successfully created the movie"
-    return res.status(201).json(SuccessResponseBody);
-  } catch (error) {
-    console.log(error);
     ErrorResponseBody.err = error;
-    return res.status(500).json(ErrorResponseBody);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(ErrorResponseBody);
   }
 };
 
