@@ -5,11 +5,13 @@ const { ErrorResponseBody } = require("../utils/response-body");
 const { USER_ROLE } = require("../utils/constants");
 
 /**
- * validator for user signup
- * @param req --> http request object
- * @param res --> http response object
- * @param next --> next middleware
- * @returns
+ * Validate request body for user signup
+ *
+ * @param req --> HTTP request object containing user details in body
+ * @param res --> HTTP response object to be returned
+ * @param next --> Next middleware function
+ *
+ * @returns --> Calls next middleware if request is valid, otherwise returns error response
  */
 const validateSignupRequest = async (req, res, next) => {
   // validate name of the user
@@ -34,11 +36,13 @@ const validateSignupRequest = async (req, res, next) => {
 };
 
 /**
- * validator for user signin
- * @param req --> http request object
- * @param res --> http response object
- * @param next --> next middleware
- * @returns
+ * Validate request body for user signin
+ *
+ * @param req --> HTTP request object containing email and password in body
+ * @param res --> HTTP response object to be returned
+ * @param next --> Next middleware function
+ *
+ * @returns --> Calls next middleware if request is valid, otherwise returns error response
  */
 const validateSigninRequest = async (req, res, next) => {
   // validate user email presence
@@ -53,10 +57,18 @@ const validateSigninRequest = async (req, res, next) => {
     return res.status(StatusCodes.BAD_REQUEST).json(ErrorResponseBody);
   }
 
-  // request is valid
   next();
 };
 
+/**
+ * Authenticate user using JWT token
+ *
+ * @param req --> HTTP request object containing JWT token in headers
+ * @param res --> HTTP response object to be returned
+ * @param next --> Next middleware function
+ *
+ * @returns --> Calls next middleware if token is valid, otherwise returns error response
+ */
 const isAuthenticated = async (req, res, next) => {
   try {
     const token = req.headers["x-access-token"];
@@ -64,11 +76,13 @@ const isAuthenticated = async (req, res, next) => {
       ErrorResponseBody.err = "No token provided";
       return res.status(StatusCodes.FORBIDDEN).json(ErrorResponseBody);
     }
+
     const response = jwt.verify(token, process.env.AUTH_KEY);
     if (!response) {
       ErrorResponseBody.err = "Token not verified";
       return res.status(StatusCodes.UNAUTHORIZED).json(ErrorResponseBody);
     }
+
     const user = await UserService.getUserById(response.id);
     req.user = user.id;
     next();
@@ -77,10 +91,12 @@ const isAuthenticated = async (req, res, next) => {
       ErrorResponseBody.err = error.message;
       return res.status(StatusCodes.UNAUTHORIZED).json(ErrorResponseBody);
     }
+
     if (error.code == StatusCodes.NOT_FOUND) {
       ErrorResponseBody.err = "User doesnot exist";
       return res.status(error.code).json(ErrorResponseBody);
     }
+
     ErrorResponseBody.err = error;
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
@@ -88,6 +104,15 @@ const isAuthenticated = async (req, res, next) => {
   }
 };
 
+/**
+ * Validate request body for password reset
+ *
+ * @param req --> HTTP request object containing oldPassword and newPassword in body
+ * @param res --> HTTP response object to be returned
+ * @param next --> Next middleware function
+ *
+ * @returns --> Calls next middleware if request is valid, otherwise returns error response
+ */
 const validateResetPasswordRequest = (req, res, next) => {
   // validate old password presence
   if (!req.body.oldPassword) {
@@ -101,10 +126,18 @@ const validateResetPasswordRequest = (req, res, next) => {
     return res.status(StatusCodes.BAD_REQUEST).json(ErrorResponseBody);
   }
 
-  // we can proceed
   next();
 };
 
+/**
+ * Authorize admin-only access
+ *
+ * @param req --> HTTP request object containing authenticated user ID
+ * @param res --> HTTP response object to be returned
+ * @param next --> Next middleware function
+ *
+ * @returns --> Calls next middleware if user is admin, otherwise returns error response
+ */
 const isAdmin = async (req, res, next) => {
   const user = await UserService.getUserById(req.user);
   if (user.userRole !== USER_ROLE.admin) {
@@ -115,6 +148,15 @@ const isAdmin = async (req, res, next) => {
   next();
 };
 
+/**
+ * Authorize client-only access
+ *
+ * @param req --> HTTP request object containing authenticated user ID
+ * @param res --> HTTP response object to be returned
+ * @param next --> Next middleware function
+ *
+ * @returns --> Calls next middleware if user is client, otherwise returns error response
+ */
 const isClient = async (req, res, next) => {
   const user = await UserService.getUserById(req.user);
   if (user.userRole !== USER_ROLE.client) {
@@ -125,6 +167,15 @@ const isClient = async (req, res, next) => {
   next();
 };
 
+/**
+ * Authorize admin or client access
+ *
+ * @param req --> HTTP request object containing authenticated user ID
+ * @param res --> HTTP response object to be returned
+ * @param next --> Next middleware function
+ *
+ * @returns --> Calls next middleware if user is admin or client, otherwise returns error response
+ */
 const isAdminOrClient = async (req, res, next) => {
   const user = await UserService.getUserById(req.user);
   if (user.userRole !== USER_ROLE.admin && user.userRole !== USER_ROLE.client) {

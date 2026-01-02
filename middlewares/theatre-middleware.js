@@ -2,13 +2,14 @@ const { StatusCodes } = require("http-status-codes");
 const { ErrorResponseBody } = require("../utils/response-body");
 
 /**
+ * Validate request body for creating a theatre
  *
- * @param req --> HTTP request object
- * @param res --> HTTP response object
- * @param next --> next middleware function
- * @returns --> whether the request is valid or not
+ * @param req --> HTTP request object containing theatre details in body
+ * @param res --> HTTP response object to be returned
+ * @param next --> Next middleware function
+ *
+ * @returns --> Calls next middleware if request is valid, otherwise returns error response
  */
-
 const validateTheatreCreateRequest = async (req, res, next) => {
   if (!req.body.name) {
     ErrorResponseBody.message =
@@ -31,6 +32,15 @@ const validateTheatreCreateRequest = async (req, res, next) => {
   next();
 };
 
+/**
+ * Validate request body for updating movies in a theatre
+ *
+ * @param req --> HTTP request object containing movieIds array and insert flag in body
+ * @param res --> HTTP response object to be returned
+ * @param next --> Next middleware function
+ *
+ * @returns --> Calls next middleware if request is valid, otherwise returns error response
+ */
 const validateUpdateMoviesRequest = async (req, res, next) => {
   // validation of insert parameter
   if (req.body.insert == undefined) {
@@ -62,4 +72,7 @@ const validateUpdateMoviesRequest = async (req, res, next) => {
   next();
 };
 
-module.exports = { validateTheatreCreateRequest, validateUpdateMoviesRequest };
+module.exports = {
+  validateTheatreCreateRequest,
+  validateUpdateMoviesRequest,
+};
