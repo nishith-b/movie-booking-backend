@@ -2,9 +2,10 @@ const { StatusCodes } = require("http-status-codes");
 const Movie = require("../models/movie");
 
 /**
+ * Get a movie by its ID
  *
- * @param id --> id which will be used to identify the movie to be fetched
- * @returns --> object containing movie fetched
+ * @param id --> Movie ID
+ * @returns --> Returns the movie object
  */
 const getMovieById = async (id) => {
   const movie = await Movie.findById(id);
@@ -20,9 +21,10 @@ const getMovieById = async (id) => {
 };
 
 /**
+ * Create a new movie
  *
- * @param data --> object containing deatils of the new movie to be created
- * @returns --> returns the new movie object created
+ * @param data --> Object containing details of the new movie
+ * @returns --> Returns the created movie object
  */
 const createMovie = async (data) => {
   try {
@@ -43,9 +45,10 @@ const createMovie = async (data) => {
 };
 
 /**
+ * Delete a movie by its ID
  *
- * @param id --> id which will be used to identify the movie to be deleted
- * @returns --> object containing details of the movie deleted
+ * @param id --> Movie ID
+ * @returns --> Returns the deleted movie object
  */
 const deleteMovie = async (id) => {
   try {
@@ -64,10 +67,11 @@ const deleteMovie = async (id) => {
 };
 
 /**
+ * Update a movie by its ID
  *
- * @param id --> id which will be used to identify the mivue to be updated
- * @param data --> object that contains actial data which is to be updated in the db
- * @returns --> returns new updated movie object
+ * @param id --> Movie ID
+ * @param data --> Object containing fields to update
+ * @returns --> Returns the updated movie object
  */
 const updateMovie = async (id, data) => {
   try {
@@ -91,16 +95,17 @@ const updateMovie = async (id, data) => {
 };
 
 /**
+ * Fetch movies based on a filter
  *
- * @param  filter --> filter helps in filtering out data based on the conditions
- * @returns --> returns an object containing all the movie fetched based on the filter
+ * @param filter --> Object containing filter conditions (e.g., { name: "abc" })
+ * @returns --> Returns an array of movies matching the filter
  */
 const fetchMovies = async (filter) => {
   let query = {};
-  if (filter.name) {
-    query.name = filter.name;
-  }
+  if (filter.name) query.name = filter.name;
+
   let movies = await Movie.find(query);
+
   if (!movies) {
     throw {
       err: "Not able to find the queried movies",

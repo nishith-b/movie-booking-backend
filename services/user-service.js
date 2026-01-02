@@ -2,6 +2,12 @@ const { StatusCodes } = require("http-status-codes");
 const User = require("../models/user");
 const { USER_ROLE, USER_STATUS } = require("../utils/constants");
 
+/**
+ * Create a new user
+ *
+ * @param data --> Object containing user details
+ * @returns --> Returns the created user object
+ */
 const createUser = async (data) => {
   try {
     // If role is CUSTOMER or not provided
@@ -18,6 +24,7 @@ const createUser = async (data) => {
     if (data.userRole && data.userRole !== USER_ROLE.customer) {
       data.userStatus = USER_STATUS.pending;
     }
+
     const response = await User.create(data);
     return response;
   } catch (error) {
@@ -32,6 +39,12 @@ const createUser = async (data) => {
   }
 };
 
+/**
+ * Get a user by email
+ *
+ * @param email --> User email
+ * @returns --> Returns the user object
+ */
 const getUserByEmail = async (email) => {
   try {
     const response = await User.findOne({ email: email });
@@ -48,6 +61,12 @@ const getUserByEmail = async (email) => {
   }
 };
 
+/**
+ * Get a user by ID
+ *
+ * @param id --> User ID
+ * @returns --> Returns the user object
+ */
 const getUserById = async (id) => {
   try {
     const user = await User.findById(id);
@@ -64,6 +83,13 @@ const getUserById = async (id) => {
   }
 };
 
+/**
+ * Update a user's role or status
+ *
+ * @param data --> Object containing fields to update (userRole, userStatus)
+ * @param userId --> User ID to update
+ * @returns --> Returns the updated user object
+ */
 const updateUserRoleOrStatus = async (data, userId) => {
   try {
     const updateQuery = {};

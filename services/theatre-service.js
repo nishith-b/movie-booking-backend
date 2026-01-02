@@ -4,9 +4,10 @@ const mongoose = require("mongoose");
 const { StatusCodes } = require("http-status-codes");
 
 /**
+ * Create a new theatre
  *
- * @param data --> object containing details of the theatre to be created
- * @returns --> object with the new theatre details
+ * @param data --> Object containing theatre details
+ * @returns --> Returns the created theatre object
  */
 const createTheatre = async (data) => {
   try {
@@ -26,9 +27,10 @@ const createTheatre = async (data) => {
 };
 
 /**
+ * Delete a theatre by ID
  *
- * @param id --> unique id using which we can identify the theatre has to be deleted
- * @returns --> returns deleted theatre object
+ * @param id --> Theatre ID
+ * @returns --> Returns the deleted theatre object
  */
 const deleteTheatre = async (id) => {
   try {
@@ -47,15 +49,15 @@ const deleteTheatre = async (id) => {
 };
 
 /**
+ * Get a theatre by ID
  *
- * @param id --> unique id which identifies theatres
- * @returns --> returns data of the particular theatre
+ * @param id --> Theatre ID
+ * @returns --> Returns the theatre object
  */
 const getTheatre = async (id) => {
   try {
     const response = await Theatre.findById(id);
     if (!response) {
-      // no record found for the given id
       throw {
         error: "No Theatre found for the given id",
         code: StatusCodes.NOT_FOUND,
@@ -69,40 +71,27 @@ const getTheatre = async (id) => {
 };
 
 /**
+ * Get all theatres based on filter
  *
- * @param data --> the data to be used to filter out theates based on city/pincode
- * @returns --> returns an object with the filtered content of theatres
+ * @param data --> Filter object containing city, pincode, name, movieId, limit, skip
+ * @returns --> Returns an array of theatres matching the filter
  */
 const getAllTheatres = async (data) => {
   try {
     let query = {};
     let pagination = {};
-    if (data && data.city) {
-      // this checks whether city is present in query params or not
-      query.city = data.city;
-    }
-    if (data && data.pincode) {
-      // this checks whether pincode is present in query params or not
-      query.pincode = data.pincode;
-    }
 
-    if (data && data.name) {
-      //checks whether name is present in query params or not
-      query.name = data.name;
-    }
+    if (data?.city) query.city = data.city;
+    if (data?.pincode) query.pincode = data.pincode;
+    if (data?.name) query.name = data.name;
+    if (data?.movieId) query.movies = { $all: data.movieId };
 
-    if (data && data.movieId) {
-      query.movies = { $all: data.movieId };
-    }
-
-    if (data && data.limit) {
-      pagination.limit = data.limit;
-    }
-    if (data && data.skip) {
-      // skip indicates page number(eg: for first page skip is 0)
+    if (data?.limit) pagination.limit = data.limit;
+    if (data?.skip) {
       let perPage = data.limit ? data.limit : 3;
       pagination.skip = data.skip * perPage;
     }
+
     const response = await Theatre.find(query, {}, pagination);
     if (!response || response.length === 0) {
       throw {
@@ -118,10 +107,11 @@ const getAllTheatres = async (data) => {
 };
 
 /**
+ * Update a theatre by ID
  *
- * @param id --> unique id to identify the theatre to be updated
- * @param data --> data to be used to update the thaetre
- * @returns --> returns new updated theatre object
+ * @param id --> Theatre ID
+ * @param data --> Object containing fields to update
+ * @returns --> Returns the updated theatre object
  */
 const updateTheatre = async (id, data) => {
   try {
@@ -131,7 +121,6 @@ const updateTheatre = async (id, data) => {
     });
 
     if (!response) {
-      // no record found for the given id
       throw {
         error: "No Theatre found for the given id",
         code: StatusCodes.NOT_FOUND,
@@ -152,11 +141,12 @@ const updateTheatre = async (id, data) => {
 };
 
 /**
+ * Update movies in a theatre
  *
- * @param theatreId --> unique id of the theatres for which we want to update movies
- * @param movieIds --> array of movie ids that are expected to be updated in theatre
- * @param insert --> boolean that tells whether we want insert movies or remove them
- * @returns --> returns updated object
+ * @param theatreId --> Theatre ID
+ * @param movieIds --> Array of movie IDs to add/remove
+ * @param insert --> Boolean flag: true to add, false to remove
+ * @returns --> Returns the updated theatre object
  */
 const updateMoviesInTheatres = async (theatreId, movieIds, insert) => {
   try {
@@ -169,18 +159,13 @@ const updateMoviesInTheatres = async (theatreId, movieIds, insert) => {
     }
 
     if (insert) {
-      // add movies (avoid duplicates)
-      const existingMovieIds = new Set(
-        theatre.movies.map((id) => id.toString())
-      );
-
+      const existingMovieIds = new Set(theatre.movies.map((id) => id.toString()));
       movieIds.forEach((movieId) => {
         if (!existingMovieIds.has(movieId.toString())) {
           theatre.movies.push(movieId);
         }
       });
     } else {
-      // remove movies
       theatre.movies = theatre.movies.filter(
         (movieId) => !movieIds.includes(movieId.toString())
       );
@@ -200,9 +185,14 @@ const updateMoviesInTheatres = async (theatreId, movieIds, insert) => {
   }
 };
 
+/**
+ * Get movies in a theatre
+ *
+ * @param id --> Theatre ID
+ * @returns --> Returns the theatre object with populated movies
+ */
 const getMoviesInATheatre = async (id) => {
   try {
-    // validate mongodb id format
     if (!mongoose.Types.ObjectId.isValid(id)) {
       throw {
         err: "Invalid theatre id format",
@@ -210,11 +200,7 @@ const getMoviesInATheatre = async (id) => {
       };
     }
 
-    const theatre = await Theatre.findById(id, {
-      name: 1,
-      movies: 1,
-      address: 1,
-    }).populate("movies");
+    const theatre = await Theatre.findById(id, { name: 1, movies: 1, address: 1 }).populate("movies");
 
     if (!theatre) {
       throw {
@@ -233,6 +219,13 @@ const getMoviesInATheatre = async (id) => {
   }
 };
 
+/**
+ * Check if a movie exists in a theatre
+ *
+ * @param theatreId --> Theatre ID
+ * @param movieId --> Movie ID
+ * @returns --> Returns true if movie exists, false otherwise
+ */
 const checkMovieInATheatre = async (theatreId, movieId) => {
   try {
     let response = await Theatre.findById(theatreId);
@@ -248,6 +241,7 @@ const checkMovieInATheatre = async (theatreId, movieId) => {
     throw error;
   }
 };
+
 module.exports = {
   createTheatre,
   deleteTheatre,
