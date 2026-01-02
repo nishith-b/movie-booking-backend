@@ -1,7 +1,6 @@
 /**
- * This object will be used as a template for building error responses
+ * Template object for building error responses
  */
-
 const ErrorResponseBody = {
   err: {},
   data: {},
@@ -10,12 +9,12 @@ const ErrorResponseBody = {
 };
 
 /**
- * This object will be used as a template for building success response
+ * Template object for building success responses
  */
 const SuccessResponseBody = {
   err: {},
   data: {},
-  message: "Successfully Processed Request",
+  message: "Successfully processed request",
   success: true,
 };
 

@@ -1,13 +1,21 @@
+/**
+ * User status constants
+ * @enum {string}
+ */
 const USER_STATUS = {
-  approved: "APPROVED",
-  pending: "PENDING",
-  rejected: "REJECTED",
+  approved: "APPROVED", // User account has been approved
+  pending: "PENDING",   // User account is pending approval
+  rejected: "REJECTED", // User account has been rejected
 };
 
+/**
+ * User role constants
+ * @enum {string}
+ */
 const USER_ROLE = {
-  customer: "CUSTOMER",
-  admin: "ADMIN",
-  client: "CLIENT",
+  customer: "CUSTOMER", // Regular customer
+  admin: "ADMIN",       // Admin user with full privileges
+  client: "CLIENT",     // Client user with limited privileges
 };
 
 module.exports = {
