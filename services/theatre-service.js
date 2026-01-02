@@ -162,7 +162,7 @@ const updateMoviesInTheatres = async (theatreId, movieIds, insert) => {
   try {
     const theatre = await Theatre.findById(theatreId);
     if (!theatre) {
-      return {
+      throw {
         err: "No such theatre found for the id provided",
         code: StatusCodes.NOT_FOUND,
       };

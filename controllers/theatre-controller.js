@@ -117,14 +117,14 @@ const updateTheatre = async (req, res) => {
       req.params.id,
       req.body
     );
-    if (response.error) {
-      ErrorResponseBody.err = response.error;
-      return res.status(response.code).json(ErrorResponseBody);
-    }
     SuccessResponseBody.data = response;
     SuccessResponseBody.message = "Successfully updated the theatre";
     return res.status(StatusCodes.OK).json(SuccessResponseBody);
   } catch (error) {
+    if (error.error) {
+      ErrorResponseBody.err = error.error;
+      return res.status(error.code).json(ErrorResponseBody);
+    }
     console.log(error);
     ErrorResponseBody.err = error;
     return res
@@ -140,15 +140,14 @@ const updateMovies = async (req, res) => {
       req.body.movieIds,
       req.body.insert
     );
-    if (response.err) {
-      ErrorResponseBody.err = response.err;
-      return res.status(response.code).json(ErrorResponseBody);
-    }
     SuccessResponseBody.data = response;
     SuccessResponseBody.message = "Successfully updated movies in the theatre";
     return res.status(StatusCodes.OK).json(SuccessResponseBody);
   } catch (error) {
-    console.log(error);
+    if (error.err) {
+      ErrorResponseBody.err = error.err;
+      return res.status(error.code).json(ErrorResponseBody);
+    }
     ErrorResponseBody.err = error;
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)

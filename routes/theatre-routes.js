@@ -22,10 +22,7 @@ const routes = (app) => {
 
   // READ all theatres with optional query parameters (filtering/pagination)
   // Endpoint: GET /mba/api/v1/theatres
-  app.get(
-    "/mba/api/v1/theatres",
-    theatreController.getTheatres
-  );
+  app.get("/mba/api/v1/theatres", theatreController.getTheatres);
 
   // READ a theatre by ID
   // Endpoint: GET /mba/api/v1/theatres/:id
@@ -42,11 +39,21 @@ const routes = (app) => {
 
   // UPDATE a theatre by ID (Partial update using PATCH)
   // Endpoint: PATCH /mba/api/v1/theatres/:id
-  app.patch("/mba/api/v1/theatres/:id", theatreController.updateTheatre);
+  app.patch(
+    "/mba/api/v1/theatres/:id",
+    authMiddleware.isAuthenticated,
+    authMiddleware.isAdminOrClient,
+    theatreController.updateTheatre
+  );
 
   // UPDATE a theatre by ID (Full update using PUT)
   // Endpoint: PUT /mba/api/v1/theatres/:id
-  app.put("/mba/api/v1/theatres/:id", theatreController.updateTheatre);
+  app.put(
+    "/mba/api/v1/theatres/:id",
+    authMiddleware.isAuthenticated,
+    authMiddleware.isAdminOrClient,
+    theatreController.updateTheatre
+  );
 
   app.patch(
     "/mba/api/v1/theatres/:id/movies",
