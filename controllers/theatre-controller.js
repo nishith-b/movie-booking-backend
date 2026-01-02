@@ -40,15 +40,16 @@ const create = async (req, res) => {
 const getTheatre = async (req, res) => {
   try {
     const response = await TheatreService.getTheatre(req.params.id);
-    if (response.error) {
-      ErrorResponseBody.err = response.error;
-      return res.status(response.code).json(ErrorResponseBody);
-    }
+
     SuccessResponseBody.data = response;
     SuccessResponseBody.message =
       "Successfully fetched the data of the theatre";
     return res.status(StatusCodes.OK).json(SuccessResponseBody);
   } catch (error) {
+    if (error.error) {
+      ErrorResponseBody.err = error.error;
+      return res.status(error.code).json(ErrorResponseBody);
+    }
     ErrorResponseBody.err = error;
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
