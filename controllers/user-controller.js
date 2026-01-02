@@ -1,3 +1,4 @@
+const { StatusCodes } = require("http-status-codes");
 const UserService = require("../services/user-service");
 
 const {
@@ -18,14 +19,16 @@ const update = async (req, res) => {
 
     SuccessResponseBody.data = userResponse;
     SuccessResponseBody.message = "Successfully updated the user";
-    return res.status(200).json(SuccessResponseBody);
+    return res.status(StatusCodes.OK).json(SuccessResponseBody);
   } catch (error) {
     if (error.err) {
       ErrorResponseBody.err = error.err;
       return res.status(error.code).json(ErrorResponseBody);
     }
     ErrorResponseBody.err = error;
-    return res.status(500).json(ErrorResponseBody);
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json(ErrorResponseBody);
   }
 };
 

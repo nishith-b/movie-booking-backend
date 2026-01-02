@@ -1,3 +1,4 @@
+const { StatusCodes } = require("http-status-codes");
 const { ErrorResponseBody } = require("../utils/response-body");
 
 const validateUpdateUserRequest = (req, res, next) => {
@@ -5,7 +6,7 @@ const validateUpdateUserRequest = (req, res, next) => {
   if (!(req.body.userRole || req.body.userStatus)) {
     ErrorResponseBody.err =
       "Malformed Request, Please send atleast one parameter";
-    return res.status(400).json(ErrorResponseBody);
+    return res.status(StatusCodes.BAD_REQUEST).json(ErrorResponseBody);
   }
   next();
 };
