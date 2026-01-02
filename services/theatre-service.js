@@ -190,7 +190,7 @@ const updateMoviesInTheatres = async (theatreId, movieIds, insert) => {
     return theatre.populate("movies");
   } catch (error) {
     if (error.name == "TypeError") {
-      return {
+      throw {
         code: StatusCodes.NOT_FOUND,
         err: "No theatre found for the given id",
       };
@@ -204,7 +204,7 @@ const getMoviesInATheatre = async (id) => {
   try {
     // validate mongodb id format
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      return {
+      throw {
         err: "Invalid theatre id format",
         code: StatusCodes.BAD_REQUEST,
       };
@@ -217,7 +217,7 @@ const getMoviesInATheatre = async (id) => {
     }).populate("movies");
 
     if (!theatre) {
-      return {
+      throw {
         err: "No theatre with the given id found",
         code: StatusCodes.NOT_FOUND,
       };
@@ -226,7 +226,7 @@ const getMoviesInATheatre = async (id) => {
     return theatre;
   } catch (error) {
     console.error(error);
-    return {
+    throw {
       err: "Internal server error",
       code: StatusCodes.INTERNAL_SERVER_ERROR,
     };
@@ -237,7 +237,7 @@ const checkMovieInATheatre = async (theatreId, movieId) => {
   try {
     let response = await Theatre.findById(theatreId);
     if (!response) {
-      return {
+      throw {
         err: "No such theatre found for the given id",
         code: StatusCodes.NOT_FOUND,
       };
