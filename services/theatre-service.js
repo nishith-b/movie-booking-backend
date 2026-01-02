@@ -21,7 +21,7 @@ const createTheatre = async (data) => {
       });
       throw { err: err, code: StatusCodes.UNPROCESSABLE_ENTITY };
     }
-    console.log(error);
+    console.error(error);
     throw error;
   }
 };
@@ -43,7 +43,7 @@ const deleteTheatre = async (id) => {
     }
     return response;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw error;
   }
 };
@@ -65,7 +65,7 @@ const getTheatre = async (id) => {
     }
     return response;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw error;
   }
 };
@@ -101,7 +101,7 @@ const getAllTheatres = async (data) => {
     }
     return response;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw error;
   }
 };
@@ -128,7 +128,7 @@ const updateTheatre = async (id, data) => {
     }
     return response;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     if (error.name == "ValidationError") {
       let err = {};
       Object.keys(error.errors).forEach((key) => {
@@ -159,7 +159,9 @@ const updateMoviesInTheatres = async (theatreId, movieIds, insert) => {
     }
 
     if (insert) {
-      const existingMovieIds = new Set(theatre.movies.map((id) => id.toString()));
+      const existingMovieIds = new Set(
+        theatre.movies.map((id) => id.toString())
+      );
       movieIds.forEach((movieId) => {
         if (!existingMovieIds.has(movieId.toString())) {
           theatre.movies.push(movieId);
@@ -180,7 +182,7 @@ const updateMoviesInTheatres = async (theatreId, movieIds, insert) => {
         err: "No theatre found for the given id",
       };
     }
-    console.log(error);
+    console.error(error);
     throw error;
   }
 };
@@ -200,7 +202,11 @@ const getMoviesInATheatre = async (id) => {
       };
     }
 
-    const theatre = await Theatre.findById(id, { name: 1, movies: 1, address: 1 }).populate("movies");
+    const theatre = await Theatre.findById(id, {
+      name: 1,
+      movies: 1,
+      address: 1,
+    }).populate("movies");
 
     if (!theatre) {
       throw {
@@ -237,7 +243,7 @@ const checkMovieInATheatre = async (theatreId, movieId) => {
     }
     return response.movies.includes(movieId);
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw error;
   }
 };

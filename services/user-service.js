@@ -56,7 +56,7 @@ const getUserByEmail = async (email) => {
     }
     return response;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw error;
   }
 };
@@ -78,7 +78,7 @@ const getUserById = async (id) => {
     }
     return user;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw error;
   }
 };

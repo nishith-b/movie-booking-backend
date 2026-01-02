@@ -36,7 +36,7 @@ const createMovie = async (data) => {
       Object.keys(error.errors).forEach((key) => {
         err[key] = error.errors[key].message;
       });
-      console.log(err);
+      console.error(err);
       throw { err: err, code: StatusCodes.UNPROCESSABLE_ENTITY };
     } else {
       throw new error();
@@ -61,7 +61,7 @@ const deleteMovie = async (id) => {
     }
     return movie;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw error;
   }
 };
@@ -86,7 +86,7 @@ const updateMovie = async (id, data) => {
       Object.keys(error.errors).forEach((key) => {
         err[key] = error.errors[key].message;
       });
-      console.log(err);
+      console.error(err);
       throw { err: err, code: StatusCodes.UNPROCESSABLE_ENTITY };
     } else {
       throw new error();
