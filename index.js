@@ -1,6 +1,6 @@
 const express = require("express");
 const dotenv = require("dotenv");
-const mongoose = require("mongoose");
+const DBConnect = require("./utils/db");
 
 const MovieRoutes = require("./routes/movie-routes");
 const TheatreRoutes = require("./routes/theatre-routes");
@@ -15,7 +15,7 @@ const PORT = process.env.PORT || 5000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-mongoose.set("debug", true);
+
 
 MovieRoutes(app);
 TheatreRoutes(app);
@@ -24,10 +24,8 @@ UserRoutes(app);
 
 const startServer = async () => {
   try {
-    await mongoose.connect(process.env.DB_URL);
-
+    await DBConnect();
     console.log("Connected To Database");
-
     app.listen(PORT, () => {
       console.log(`Server Running On PORT ${PORT}`);
     });

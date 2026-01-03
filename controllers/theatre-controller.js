@@ -20,6 +20,7 @@ const create = async (req, res) => {
     SuccessResponseBody.message = "Successfully created the theatre";
     return res.status(StatusCodes.CREATED).json(SuccessResponseBody);
   } catch (error) {
+    //console.error(error);
     if (error.err) {
       ErrorResponseBody.err = error.err;
       ErrorResponseBody.message =

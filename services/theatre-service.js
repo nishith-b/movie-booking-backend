@@ -21,7 +21,20 @@ const createTheatre = async (data) => {
       });
       throw { err: err, code: StatusCodes.UNPROCESSABLE_ENTITY };
     }
-    console.error(error);
+
+    if (error.code === 11000) {
+      const err = {};
+      Object.keys(error.keyValue).forEach((key) => {
+        if (key === "nameKey") err["name"] = "Theatre name already exists";
+        else if (key === "cityKey")
+          err["city"] = "Theatre already exists in this city";
+        else err[key] = "Duplicate value";
+      });
+      throw {
+        err,
+        code: StatusCodes.CONFLICT,
+      };
+    }
     throw error;
   }
 };
