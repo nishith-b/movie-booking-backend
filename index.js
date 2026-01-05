@@ -6,6 +6,7 @@ const MovieRoutes = require("./routes/movie-routes");
 const TheatreRoutes = require("./routes/theatre-routes");
 const AuthRoutes = require("./routes/auth-routes");
 const UserRoutes = require("./routes/user-routes");
+const BookingRoutes = require("./routes/booking-routes");
 
 dotenv.config();
 
@@ -15,12 +16,11 @@ const PORT = process.env.PORT || 5000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-
-
 MovieRoutes(app);
 TheatreRoutes(app);
 AuthRoutes(app);
 UserRoutes(app);
+BookingRoutes(app);
 
 const startServer = async () => {
   try {

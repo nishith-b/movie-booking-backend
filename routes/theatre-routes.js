@@ -24,8 +24,8 @@ const routes = (app) => {
    */
   app.post(
     "/mba/api/v1/theatres",
-    //authMiddleware.isAuthenticated,
-    //authMiddleware.isAdminOrClient,
+    authMiddleware.isAuthenticated,
+    authMiddleware.isAdminOrClient,
     theatreMiddleware.validateTheatreCreateRequest,
     theatreController.create
   );
@@ -96,6 +96,8 @@ const routes = (app) => {
    */
   app.patch(
     "/mba/api/v1/theatres/:id/movies",
+    authMiddleware.isAuthenticated,
+    authMiddleware.isAdminOrClient,
     theatreMiddleware.validateUpdateMoviesRequest,
     theatreController.updateMovies
   );
