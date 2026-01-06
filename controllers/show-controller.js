@@ -40,4 +40,40 @@ const getShows = async (req, res) => {
       .json(ErrorResponseBody);
   }
 };
-module.exports = { create, getShows };
+
+const deleteShow = async (req, res) => {
+  try {
+    const response = await showService.deleteShow(req.params.id);
+    SuccessResponseBody.data = response;
+    SuccessResponseBody.message = "Successfully deleted the show";
+    return res.status(StatusCodes.OK).json(SuccessResponseBody);
+  } catch (error) {
+    if (error.err) {
+      ErrorResponseBody.err = error.err;
+      return res.status(error.code).json(ErrorResponseBody);
+    }
+    ErrorResponseBody.err = error;
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json(ErrorResponseBody);
+  }
+};
+
+const updateShow = async (req, res) => {
+  try {
+    const response = await showService.updateShow(req.params.id, req.body);
+    SuccessResponseBody.data = response;
+    SuccessResponseBody.message = "Successfully updated the show";
+    return res.status(StatusCodes.OK).json(SuccessResponseBody);
+  } catch (error) {
+    if (error.err) {
+      ErrorResponseBody.err = error.err;
+      return res.status(error.code).json(ErrorResponseBody);
+    }
+    ErrorResponseBody.err = error;
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json(ErrorResponseBody);
+  }
+};
+module.exports = { create, getShows, deleteShow, updateShow };
