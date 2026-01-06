@@ -23,4 +23,21 @@ const create = async (req, res) => {
   }
 };
 
-module.exports = { create };
+const getShows = async (req, res) => {
+  try {
+    const response = await showService.getShows(req.query);
+    SuccessResponseBody.message = "Successfully fetched the movie shows";
+    SuccessResponseBody.data = response;
+    return res.status(StatusCodes.CREATED).json(SuccessResponseBody);
+  } catch (error) {
+    if (error.err) {
+      ErrorResponseBody.err = error.err;
+      return res.status(error.code).json(ErrorResponseBody);
+    }
+    ErrorResponseBody.err = error;
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json(ErrorResponseBody);
+  }
+};
+module.exports = { create, getShows };

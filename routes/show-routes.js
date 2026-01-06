@@ -10,6 +10,8 @@ const routes = (app) => {
     showMiddleware.validateCreateShowRequest,
     showController.create
   );
+
+  app.get("/mba/api/v1/shows", showController.getShows);
 };
 
 module.exports = routes;
