@@ -1,8 +1,11 @@
 const { StatusCodes } = require("http-status-codes");
 const { ErrorResponseBody } = require("../utils/response-body");
+
 const ObjectId = require("mongoose").Types.ObjectId;
 
 const theatreService = require("../services/theatre-service");
+const userService = require("../services/user-service");
+const { USER_ROLE, BOOKING_STATUS } = require("../utils/constants");
 
 const validateCreateBookingRequest = async (req, res, next) => {
   try {
@@ -67,6 +70,21 @@ const validateCreateBookingRequest = async (req, res, next) => {
   }
 };
 
+// Customer only allowed to cancel booking
+const canChangeStatus = async (req, res, next) => {
+  const user = await userService.getUserById(req.user);
+  if (
+    user.userRole == USER_ROLE.customer &&
+    req.body.status &&
+    req.body.status !== BOOKING_STATUS.cancelled
+  ) {
+    ErrorResponseBody.err = "You are not allowed to change the booking status";
+    return res.status(StatusCodes.UNAUTHORIZED).json(ErrorResponseBody);
+  }
+  next();
+};
+
 module.exports = {
   validateCreateBookingRequest,
+  canChangeStatus,
 };

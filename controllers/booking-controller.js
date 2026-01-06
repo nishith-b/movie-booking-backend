@@ -27,4 +27,25 @@ const create = async (req, res) => {
   }
 };
 
-module.exports = { create };
+const update = async (req, res) => {
+  try {
+    const response = await bookingService.updateBooking(
+      req.params.id,
+      req.body
+    );
+    (SuccessResponseBody.data = response),
+      (SuccessResponseBody.message = "Successfully updated the booking");
+    return res.status(StatusCodes.OK).json(SuccessResponseBody);
+  } catch (error) {
+    if (error.err) {
+      ErrorResponseBody.err = error.err;
+      return res.status(error.code).json(ErrorResponseBody);
+    }
+    ErrorResponseBody.err = error;
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json(ErrorResponseBody);
+  }
+};
+
+module.exports = { create, update };
