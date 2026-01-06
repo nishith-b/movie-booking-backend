@@ -43,4 +43,53 @@ const updateBooking = async (bookingId, data) => {
     throw error;
   }
 };
-module.exports = { createBooking, updateBooking };
+
+const getBookings = async (data) => {
+  try {
+    const response = await Booking.find(data);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const getAllBookings = async () => {
+  try {
+    const response = await Booking.find();
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const getBookingById = async (id, userId) => {
+  try {
+    const response = await Booking.findById(id);
+    console.log(response);
+    if (!response) {
+      throw {
+        err: "No booking records found for the id",
+        code: StatusCodes.NOT_FOUND,
+      };
+    }
+
+    if (!response.userId.equals(userId)) {
+      throw {
+        err: "Not able to access the booking",
+        code: StatusCodes.UNAUTHORIZED,
+      };
+    }
+    return response;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+module.exports = {
+  createBooking,
+  updateBooking,
+  getBookings,
+  getAllBookings,
+  getBookingById,
+};
