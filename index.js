@@ -7,6 +7,7 @@ const TheatreRoutes = require("./routes/theatre-routes");
 const AuthRoutes = require("./routes/auth-routes");
 const UserRoutes = require("./routes/user-routes");
 const BookingRoutes = require("./routes/booking-routes");
+const ShowRoutes = require("./routes/show-routes");
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ TheatreRoutes(app);
 AuthRoutes(app);
 UserRoutes(app);
 BookingRoutes(app);
+ShowRoutes(app);
 
 const startServer = async () => {
   try {

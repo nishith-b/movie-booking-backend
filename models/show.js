@@ -10,7 +10,7 @@ const showSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       required: true,
     },
-    timing: {
+    timings: {
       type: String,
       required: true,
     },
