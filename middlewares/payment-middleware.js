@@ -22,7 +22,7 @@ const verifyPaymentCreateRequest = async (req, res, next) => {
   }
 
   // everything is fine
-  next()
+  next();
 };
 
 module.exports = { verifyPaymentCreateRequest };

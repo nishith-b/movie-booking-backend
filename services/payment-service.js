@@ -1,7 +1,12 @@
 const Payment = require("../models/payment");
 const Booking = require("../models/booking");
 const { StatusCodes } = require("http-status-codes");
-const { BOOKING_STATUS, PAYMENT_STATUS } = require("../utils/constants");
+const {
+  BOOKING_STATUS,
+  PAYMENT_STATUS,
+  USER_ROLE,
+} = require("../utils/constants");
+const User = require("../models/user");
 
 const createPayment = async (data) => {
   try {
@@ -69,4 +74,23 @@ const getPaymentsById = async (id) => {
   }
 };
 
-module.exports = { createPayment, getPaymentsById };
+const getAllPayments = async (userId) => {
+  try {
+    const user = await User.findById(userId);
+    let filter = {};
+    if (user.userRole != USER_ROLE.admin) {
+      filter.userId = user.id;
+    }
+    const bookings = await Booking.find(filter, { _id: 1 });
+    // $in accepts only array of values (not array of objects)
+    const bookingIds = bookings.map((b) => b._id);
+    const payments = await Payment.find({
+      bookingId: { $in: bookingIds },
+    });
+    return payments;
+  } catch (error) {
+    throw error;
+  }
+};
+
+module.exports = { createPayment, getPaymentsById, getAllPayments };

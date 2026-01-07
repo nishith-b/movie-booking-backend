@@ -9,7 +9,7 @@ const {
 const createPayment = async (req, res) => {
   try {
     const response = await paymentService.createPayment(req.body);
-  
+
     if (response.status == BOOKING_STATUS.expired) {
       ErrorResponseBody.err =
         "The payment took more than 5 minutes to get processed, hence your booking got expired..! Please Try Again...!";
@@ -46,7 +46,7 @@ const getPaymentsDetailsById = async (req, res) => {
       "Successfully fetched the booking and payment details";
     return res.status(StatusCodes.OK).json(SuccessResponseBody);
   } catch (error) {
-    console.log(error)
+    console.log(error);
     if (error.err) {
       ErrorResponseBody.err = error.err;
       return res.status(error.code).json(ErrorResponseBody);
@@ -57,4 +57,20 @@ const getPaymentsDetailsById = async (req, res) => {
       .json(ErrorResponseBody);
   }
 };
-module.exports = { createPayment, getPaymentsDetailsById };
+
+const getAllPayments = async (req, res) => {
+  try {
+    const response = await paymentService.getAllPayments(req.user);
+    SuccessResponseBody.data = response;
+    SuccessResponseBody.message = "Successfully fetched all the payments";
+    return res.status(StatusCodes.OK).json(SuccessResponseBody);
+  } catch (error) {
+    console.log(error)
+    ErrorResponseBody.err = error;
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json(ErrorResponseBody);
+  }
+};
+
+module.exports = { createPayment, getPaymentsDetailsById, getAllPayments };
