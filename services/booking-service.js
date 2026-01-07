@@ -1,9 +1,36 @@
 const { StatusCodes } = require("http-status-codes");
 const Booking = require("../models/booking");
+const Show = require("../models/show");
 
 const createBooking = async (data) => {
   try {
+    console.log(data);
+
+    const timing = data.timings.replace(/"/g, "");
+    const noOfSeats = Number(data.noOfSeats);
+
+    if (Number.isNaN(noOfSeats)) {
+      throw new Error("Invalid seat count");
+    }
+
+    const show = await Show.findOne({
+      movieId: data.movieId,
+      theatreId: data.theatreId,
+      timings: timing,
+    });
+
+    if (!show) {
+      throw {
+        err: "Show not found for given timing",
+        code: 404,
+      };
+    }
+
+    data.totalCost = noOfSeats * show.price;
+
     const response = await Booking.create(data);
+    show.noOfSeats -= data.noOfSeats;
+    await show.save();
     return response;
   } catch (error) {
     console.log(error);
