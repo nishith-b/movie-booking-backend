@@ -5,7 +5,7 @@ const {
   SuccessResponseBody,
   ErrorResponseBody,
 } = require("../utils/response-body");
-const axios = require("axios");
+const sendMail = require("../services/email-service");
 const User = require("../models/user");
 const Movie = require("../models/movie");
 const Theatre = require("../models/theatre");
@@ -31,11 +31,11 @@ const createPayment = async (req, res) => {
     const theatre = await Theatre.findById(response.theatreId);
     SuccessResponseBody.data = response;
     SuccessResponseBody.message = "Booking Completed Successfully..!";
-    axios.post(process.env.NOTI_SERVICE + "/notiservice/api/v1/notifications", {
-      subject: "Your Booking is Successfull",
-      recepientEmails: [user.email],
-      content: `Your Booking for ${movie.name} in ${theatre.name} for ${response.noOfSeats} on ${response.timings} is Successfull.Your booking id is ${response.id} `,
-    });
+    sendMail(
+      "Your Booking is Successfull",
+      user.email,
+      `Your Booking for ${movie.name} in ${theatre.name} for ${response.noOfSeats} on ${response.timings} is Successfull.Your booking id is ${response.id} `
+    );
     return res.status(StatusCodes.OK).json(SuccessResponseBody);
   } catch (error) {
     if (error.err) {
