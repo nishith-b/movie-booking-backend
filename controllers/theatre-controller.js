@@ -15,7 +15,10 @@ const {
  */
 const create = async (req, res) => {
   try {
-    const response = await TheatreService.createTheatre(req.body);
+    const response = await TheatreService.createTheatre({
+      ...req.body,
+      owner: req.user,
+    });
     SuccessResponseBody.data = response;
     SuccessResponseBody.message = "Successfully created the theatre";
     return res.status(StatusCodes.CREATED).json(SuccessResponseBody);
