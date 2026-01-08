@@ -5,6 +5,10 @@ const {
   SuccessResponseBody,
   ErrorResponseBody,
 } = require("../utils/response-body");
+const sendMail = require("../services/email-service");
+const User = require("../models/user");
+const Movie = require("../models/movie");
+const Theatre = require("../models/theatre");
 
 const createPayment = async (req, res) => {
   try {
@@ -22,9 +26,16 @@ const createPayment = async (req, res) => {
       ErrorResponseBody.data = response;
       return res.status(StatusCodes.PAYMENT_REQUIRED).json(ErrorResponseBody);
     }
-
+    const user = await User.findById(response.userId);
+    const movie = await Movie.findById(response.movieId);
+    const theatre = await Theatre.findById(response.theatreId);
     SuccessResponseBody.data = response;
     SuccessResponseBody.message = "Booking Completed Successfully..!";
+    sendMail(
+      "Your Booking is Successfull",
+      user.email,
+      `Your Booking for ${movie.name} in ${theatre.name} for ${response.noOfSeats} on ${response.timings} is Successfull.Your booking id is ${response.id} `
+    );
     return res.status(StatusCodes.OK).json(SuccessResponseBody);
   } catch (error) {
     if (error.err) {
@@ -65,7 +76,7 @@ const getAllPayments = async (req, res) => {
     SuccessResponseBody.message = "Successfully fetched all the payments";
     return res.status(StatusCodes.OK).json(SuccessResponseBody);
   } catch (error) {
-    console.log(error)
+    console.log(error);
     ErrorResponseBody.err = error;
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)

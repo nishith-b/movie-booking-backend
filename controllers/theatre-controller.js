@@ -1,5 +1,6 @@
 const { StatusCodes } = require("http-status-codes");
 const TheatreService = require("../services/theatre-service");
+const sendMail = require("../services/email-service");
 const {
   SuccessResponseBody,
   ErrorResponseBody,
@@ -15,9 +16,17 @@ const {
  */
 const create = async (req, res) => {
   try {
-    const response = await TheatreService.createTheatre(req.body);
+    const response = await TheatreService.createTheatre({
+      ...req.body,
+      owner: req.user,
+    });
     SuccessResponseBody.data = response;
     SuccessResponseBody.message = "Successfully created the theatre";
+    sendMail(
+      "Successfully created a theatre",
+      response.userId,
+      "You have successfully created a new theatre"
+    );
     return res.status(StatusCodes.CREATED).json(SuccessResponseBody);
   } catch (error) {
     //console.error(error);
