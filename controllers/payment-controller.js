@@ -34,7 +34,7 @@ const createPayment = async (req, res) => {
     sendMail(
       "Your Booking is Successfull",
       user.email,
-      `Your Booking for ${movie.name} in ${theatre.name} for ${response.noOfSeats} on ${response.timings} is Successfull.Your booking id is ${response.id} `
+      `Your Booking for ${movie.name} in ${theatre.name} for ${response.noOfSeats} on ${response.timings} is Successfull.Your booking id is ${response.id} `,
     );
     return res.status(StatusCodes.OK).json(SuccessResponseBody);
   } catch (error) {

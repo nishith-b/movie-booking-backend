@@ -31,10 +31,10 @@ const update = async (req, res) => {
   try {
     const response = await bookingService.updateBooking(
       req.params.id,
-      req.body
+      req.body,
     );
-    (SuccessResponseBody.data = response),
-      (SuccessResponseBody.message = "Successfully updated the booking");
+    ((SuccessResponseBody.data = response),
+      (SuccessResponseBody.message = "Successfully updated the booking"));
     return res.status(StatusCodes.OK).json(SuccessResponseBody);
   } catch (error) {
     if (error.err) {
@@ -80,7 +80,7 @@ const getBookingById = async (req, res) => {
   try {
     const response = await bookingService.getBookingById(
       req.params.id,
-      req.user
+      req.user,
     );
     SuccessResponseBody.data = response;
     SuccessResponseBody.message = "Successfully fetched the booking";

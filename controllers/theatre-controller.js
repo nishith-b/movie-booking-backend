@@ -25,7 +25,7 @@ const create = async (req, res) => {
     sendMail(
       "Successfully created a theatre",
       response.userId,
-      "You have successfully created a new theatre"
+      "You have successfully created a new theatre",
     );
     return res.status(StatusCodes.CREATED).json(SuccessResponseBody);
   } catch (error) {
@@ -135,7 +135,7 @@ const updateTheatre = async (req, res) => {
   try {
     const response = await TheatreService.updateTheatre(
       req.params.id,
-      req.body
+      req.body,
     );
     SuccessResponseBody.data = response;
     SuccessResponseBody.message = "Successfully updated the theatre";
@@ -166,7 +166,7 @@ const updateMovies = async (req, res) => {
     const response = await TheatreService.updateMoviesInTheatres(
       req.params.id,
       req.body.movieIds,
-      req.body.insert
+      req.body.insert,
     );
     SuccessResponseBody.data = response;
     SuccessResponseBody.message = "Successfully updated movies in the theatre";
@@ -223,7 +223,7 @@ const checkMovie = async (req, res) => {
     const { theatreId, movieId } = req.params;
     const response = await TheatreService.checkMovieInATheatre(
       theatreId,
-      movieId
+      movieId,
     );
     SuccessResponseBody.data = response;
     SuccessResponseBody.message =

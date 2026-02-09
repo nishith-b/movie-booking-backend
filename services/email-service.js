@@ -2,6 +2,7 @@ const axios = require("axios");
 const User = require("../models/user");
 
 const sendMail = async (subject, email, content) => {
+  // Implement Queue Here
   const user = await User.findById(user.email);
   axios.post(process.env.NOTI_SERVICE + "/notiservice/api/v1/notifications", {
     subject: subject,
